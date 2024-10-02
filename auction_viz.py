@@ -56,63 +56,54 @@ header {visibility: hidden;}
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
-
-#--------Functions for loading File Starts---------------------
+#--------Functions for Loading Files with Caching---------------------
 
 @st.cache_resource
 def loadauctionbiddatayearbandcomb():
-	password = st.secrets["db_password"]
-	excel_content = io.BytesIO()
-	with open("auctionbiddatayearbandcomb.xlsx", 'rb') as f:
-		excel = msoffcrypto.OfficeFile(f)
-		excel.load_key(password)
-		excel.decrypt(excel_content)
+    password = st.secrets["db_password"]
+    excel_content = io.BytesIO()
+    with open("auctionbiddatayearbandcomb.xlsx", 'rb') as f:
+        excel = msoffcrypto.OfficeFile(f)
+        excel.load_key(password)  # Assuming password is required to access the file
+        excel.decrypt(excel_content)
 
-	xl = pd.ExcelFile(excel_content)
-	sheetauctiondata = xl.sheet_names
-	df = pd.read_excel(excel_content, sheet_name=sheetauctiondata)
-	return df
-
+    xl = pd.ExcelFile(excel_content)
+    df = pd.read_excel(excel_content, sheet_name=xl.sheet_names[0])
+    return df
 
 @st.cache_resource
 def auctionbiddatayearactivitycomb():
-	password = st.secrets["db_password"]
-	excel_content = io.BytesIO()
-	with open("auctionbiddatayearactivitycomb.xlsx", 'rb') as f:
-		excel = msoffcrypto.OfficeFile(f)
-		excel.load_key(password)
-		excel.decrypt(excel_content)
+    password = st.secrets["db_password"]
+    excel_content = io.BytesIO()
+    with open("auctionbiddatayearactivitycomb.xlsx", 'rb') as f:
+        excel = msoffcrypto.OfficeFile(f)
+        excel.load_key(password)  # Assuming password is required to access the file
+        excel.decrypt(excel_content)
 
-	xl = pd.ExcelFile(excel_content)
-	sheetauctiondata = xl.sheet_names
-	df = pd.read_excel(excel_content, sheet_name=sheetauctiondata)
-	return df
+    xl = pd.ExcelFile(excel_content)
+    df = pd.read_excel(excel_content, sheet_name=xl.sheet_names[0])
+    return df
 
-#--------Fuctions for loading File Ends--------------------
+#--------Constants for Charts ---------------------
 
+# Height and width settings for heatmaps
+heatmapheight = 900
+heatmapwidth = 900
 
-# #end of month auction completion dates dictionary for the purpose of evaluting rs-usd rates 
+# Margins for heatmaps and summary charts
+t, b, l, r, pad = 80, 60, 10, 10, 0
+summarychartheight = 200
 
-auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30),2013: datetime(2013,3,31), 2014: datetime(2014,2,28),
-					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
-					2024 : datetime(2024,6,3)}
+# Text settings for embedded chart text and tooltips
+text_embed_in_chart_size = 12
+text_embed_in_hover_size = 16
 
+# Multipliers for plot alignment
+plot_row_total_chart_ht_mul = 1.018
 
-#Constants for Charts 
-heatmapheight = 900 #Height of Heatmaps
-heatmapwidth = 900 #Width of Heatmaps
-#Heatmap Chart Margins
-t=80
-b=60
-l=10
-r=10
-pad=0
-summarychartheight = 200 #Summary Chart at Bottom Height 
-text_embed_in_chart_size = 12 #Size of Text Embedded in all Charts 
-text_embed_in_hover_size = 16 #Size of Text Embedded in tooltips
-plot_row_total_chart_ht_mul = 1.018 #This multiplier aligns the row total chart with the heatmap
-stcol1 = 9 #No of Columns for Heatmap to Fit 
-stcol2 = 1 #No of Columns for row total chart to Fit
+# Streamlit column width settings for heatmap and row total chart
+stcol1, stcol2 = 9, 1
+
 
 
 #function for preparing the summary chart 
