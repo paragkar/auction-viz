@@ -58,11 +58,6 @@ st.markdown(hide_st_style, unsafe_allow_html =True)
 #--------Functions for loading File Starts---------------------
 
 @st.cache_resource
-def loadrstousd():
-	df = pd.read_csv("rs_to_usd.csv")
-	return df
-
-@st.cache_resource
 def loadauctionbiddatayearbandcomb():
 	password = st.secrets["db_password"]
 	excel_content = io.BytesIO()
@@ -95,139 +90,130 @@ def auctionbiddatayearactivitycomb():
 
 
 
-#--------Setting up the Constants Starts-------------------
+# #--------Setting up the Constants Starts-------------------
 
-state_dict = {'AP': 'Andhra Pradesh', 'AS': 'Assam', 'BH': 'Bihar', 'DL': 'Delhi', 'GU': 'Gujarat',
-	'HA': 'Haryana','HP': 'Himachal Pradesh','JK': 'Jammu & Kashmir','KA': 'Karnataka',
-	'KE': 'Kerala','KO': 'Kolkata','MP': 'Madhya Pradesh','MA': 'Maharashtra','MU': 'Mumbai',
-	'NE': 'Northeast','OR': 'Odisha','PU': 'Punjab','RA': 'Rajasthan','TN': 'Tamil Nadu',
-	'UPE': 'Uttar Pradesh (East)','UPW': 'Uttar Pradesh (West)','WB': 'West Bengal' }
+# state_dict = {'AP': 'Andhra Pradesh', 'AS': 'Assam', 'BH': 'Bihar', 'DL': 'Delhi', 'GU': 'Gujarat',
+# 	'HA': 'Haryana','HP': 'Himachal Pradesh','JK': 'Jammu & Kashmir','KA': 'Karnataka',
+# 	'KE': 'Kerala','KO': 'Kolkata','MP': 'Madhya Pradesh','MA': 'Maharashtra','MU': 'Mumbai',
+# 	'NE': 'Northeast','OR': 'Odisha','PU': 'Punjab','RA': 'Rajasthan','TN': 'Tamil Nadu',
+# 	'UPE': 'Uttar Pradesh (East)','UPW': 'Uttar Pradesh (West)','WB': 'West Bengal' }
 
-subtitle_freqlayout_dict = {700:"FDD: Uplink - 703-748 MHz(shown); Downlink - 758-803(notshown); ",
-		 800:"Uplink - 824-844 MHz(shown); Downlink - 869-889 MHz(not shown); ", 
-		 900:"Uplink - 890-915 MHz(shown); Downlink - 935-960 MHz(not shown); ", 
-		 1800:"Uplink - 1710-1785 MHz(shown); Downlink - 1805-1880 MHz(notshown); ", 
-		 2100:"Uplink - 1919-1979 MHz(shown); Downlink - 2109-2169 MHz(notshown); ",
-		 2300:"Up & Downlinks - 2300-2400 MHz(shown); ",
-		 2500:"Up & Downlinks - 2500-2690 MHz(shown); ",
-		 3500:"Up & Downlinks - 3300-3670 MHz(shown); ",
-		 26000:"Up & Downlinks - 24250-27500 MHz(shown); "}
+# subtitle_freqlayout_dict = {700:"FDD: Uplink - 703-748 MHz(shown); Downlink - 758-803(notshown); ",
+# 		 800:"Uplink - 824-844 MHz(shown); Downlink - 869-889 MHz(not shown); ", 
+# 		 900:"Uplink - 890-915 MHz(shown); Downlink - 935-960 MHz(not shown); ", 
+# 		 1800:"Uplink - 1710-1785 MHz(shown); Downlink - 1805-1880 MHz(notshown); ", 
+# 		 2100:"Uplink - 1919-1979 MHz(shown); Downlink - 2109-2169 MHz(notshown); ",
+# 		 2300:"Up & Downlinks - 2300-2400 MHz(shown); ",
+# 		 2500:"Up & Downlinks - 2500-2690 MHz(shown); ",
+# 		 3500:"Up & Downlinks - 3300-3670 MHz(shown); ",
+# 		 26000:"Up & Downlinks - 24250-27500 MHz(shown); "}
 
-#Operators who are the current owners of blocks of spectrum in these bands 
-newoperators_dict = {700: {'Vacant':0,'Railways':1,'Govt':2,'RJIO':3,'BSNL':4},
-			 800: {'Vacant':0,'RCOM':1,'Govt':2,'RJIO':3,'Bharti':4, 'MTS':5, 'BSNL':6},
-			 900:{'Vacant':0,'RCOM':1,'Govt':2,'Railways':3,'Bharti':4, 'AircelU':5, 
-				  'BSNLU':6,'MTNLU':7,'BhartiU':8,'VI':9,'VIU':10},
-			 1800: {'Vacant':0,'RCOM':1,'Govt':2,'RJIO':3,'Bharti':4,
-					'BhartiU':5, 'AircelR':6, 'BSNL':7,'MTNL':8,'VI':9,'VIU':10,'AircelU':11, 'Aircel':12},
-			 2100: {'Vacant':0,'RCOM':1,'Govt':2,'Bharti':3, 'BSNL':4,'MTNL':5,'VI':6, 'Aircel':7},
-			 2300: {'Vacant':0,'RJIO':1,'Govt':2,'Bharti':3, 'VI':4},
-			 2500: {'Vacant':0,'Govt':1,'BSNL':2, 'VI':3},
-			 3500: {'Vacant':0,'Bharti':1,'RJIO':2,'BSNL':3, 'MTNL':4,'VI':5},
-			 26000: {'Vacant':0,'Bharti':1,'RJIO':2,'BSNL':3, 'MTNL':4,'VI':5,'Adani':6}
-			}
+# #Operators who are the current owners of blocks of spectrum in these bands 
+# newoperators_dict = {700: {'Vacant':0,'Railways':1,'Govt':2,'RJIO':3,'BSNL':4},
+# 			 800: {'Vacant':0,'RCOM':1,'Govt':2,'RJIO':3,'Bharti':4, 'MTS':5, 'BSNL':6},
+# 			 900:{'Vacant':0,'RCOM':1,'Govt':2,'Railways':3,'Bharti':4, 'AircelU':5, 
+# 				  'BSNLU':6,'MTNLU':7,'BhartiU':8,'VI':9,'VIU':10},
+# 			 1800: {'Vacant':0,'RCOM':1,'Govt':2,'RJIO':3,'Bharti':4,
+# 					'BhartiU':5, 'AircelR':6, 'BSNL':7,'MTNL':8,'VI':9,'VIU':10,'AircelU':11, 'Aircel':12},
+# 			 2100: {'Vacant':0,'RCOM':1,'Govt':2,'Bharti':3, 'BSNL':4,'MTNL':5,'VI':6, 'Aircel':7},
+# 			 2300: {'Vacant':0,'RJIO':1,'Govt':2,'Bharti':3, 'VI':4},
+# 			 2500: {'Vacant':0,'Govt':1,'BSNL':2, 'VI':3},
+# 			 3500: {'Vacant':0,'Bharti':1,'RJIO':2,'BSNL':3, 'MTNL':4,'VI':5},
+# 			 26000: {'Vacant':0,'Bharti':1,'RJIO':2,'BSNL':3, 'MTNL':4,'VI':5,'Adani':6}
+# 			}
 
-#Operators who were the original buyer of spectrum
-oldoperators_dict = {2010 : ["Bharti", "QCOM", "Augere", "Vodafone", "Idea", "RJIO", "RCOM", "STel", "Tata", "Aircel", "Tikona"],
-			2012 : ["Bharti", "Vodafone", "Idea", "Telenor", "Videocon"],
-			2013 : ["MTS"],
-			2014 : ["Bharti", "Vodafone", "Idea", "RJIO", "RCOM", "Aircel", "Telenor"],
-			2015 : ["Bharti", "Vodafone", "Idea", "RJIO", "RCOM", "Tata", "Aircel"],
-			2016 : ["Bharti", "Vodafone", "Idea", "RJIO", "RCOM", "Tata", "Aircel"],
-			2021 : ["Bharti", "RJIO", "VodaIdea"],
-			2022 : ["Bharti", "RJIO", "VodaIdea", "Adani"],
-			2024 : ["Bharti", "RJIO", "VodaIdea"]}
+# #Operators who were the original buyer of spectrum
+# oldoperators_dict = {2010 : ["Bharti", "QCOM", "Augere", "Vodafone", "Idea", "RJIO", "RCOM", "STel", "Tata", "Aircel", "Tikona"],
+# 			2012 : ["Bharti", "Vodafone", "Idea", "Telenor", "Videocon"],
+# 			2013 : ["MTS"],
+# 			2014 : ["Bharti", "Vodafone", "Idea", "RJIO", "RCOM", "Aircel", "Telenor"],
+# 			2015 : ["Bharti", "Vodafone", "Idea", "RJIO", "RCOM", "Tata", "Aircel"],
+# 			2016 : ["Bharti", "Vodafone", "Idea", "RJIO", "RCOM", "Tata", "Aircel"],
+# 			2021 : ["Bharti", "RJIO", "VodaIdea"],
+# 			2022 : ["Bharti", "RJIO", "VodaIdea", "Adani"],
+# 			2024 : ["Bharti", "RJIO", "VodaIdea"]}
 
-#Spectrum Bands Auctioned in that Calender Year
-bands_auctioned_dict = {2010 : [2100, 2300],
-		   2012 : [800, 1800],
-		   2013 : [800, 900, 1800],
-		   2014 : [900, 1800],
-		   2015 : [800, 900, 1800, 2100],
-		   2016 : [700, 800, 900, 1800, 2100, 2300, 2500],
-		   2021 : [700, 800, 900, 1800, 2100, 2300, 2500],
-		   2022 : [600, 700, 800, 900, 1800, 2100, 2300, 2500, 3500, 26000],
-		   2024 : [800, 900, 1800, 2100, 2300, 2500, 3500, 26000]}
+# #Spectrum Bands Auctioned in that Calender Year
+# bands_auctioned_dict = {2010 : [2100, 2300],
+# 		   2012 : [800, 1800],
+# 		   2013 : [800, 900, 1800],
+# 		   2014 : [900, 1800],
+# 		   2015 : [800, 900, 1800, 2100],
+# 		   2016 : [700, 800, 900, 1800, 2100, 2300, 2500],
+# 		   2021 : [700, 800, 900, 1800, 2100, 2300, 2500],
+# 		   2022 : [600, 700, 800, 900, 1800, 2100, 2300, 2500, 3500, 26000],
+# 		   2024 : [800, 900, 1800, 2100, 2300, 2500, 3500, 26000]}
 			
 
-#if "1" the expiry tab in spectrum_map file is present and if "0" then not present
-exptab_dict = {700:1, 800:1, 900:1, 1800:1, 2100:1, 2300:1, 2500:1, 3500:1, 26000:1}
+# #if "1" the expiry tab in spectrum_map file is present and if "0" then not present
+# exptab_dict = {700:1, 800:1, 900:1, 1800:1, 2100:1, 2300:1, 2500:1, 3500:1, 26000:1}
 
-#Setting the channel sizes for respective frequency maps
-channelsize_dict = {700:2.5, 800:0.625, 900:0.2, 1800:0.2, 2100:2.5, 2300:2.5, 2500:5, 3500:5, 26000:25}
+# #Setting the channel sizes for respective frequency maps
+# channelsize_dict = {700:2.5, 800:0.625, 900:0.2, 1800:0.2, 2100:2.5, 2300:2.5, 2500:5, 3500:5, 26000:25}
 
-#scaling the granularity of the layout of the x axis in the heatmap plot for the respective bands
-xdtickfreq_dict = {700:1, 800:0.25, 900:0.4, 1800:1, 2100:1, 2300:1, 2500:2, 3500:5, 26000:50}
+# #scaling the granularity of the layout of the x axis in the heatmap plot for the respective bands
+# xdtickfreq_dict = {700:1, 800:0.25, 900:0.4, 1800:1, 2100:1, 2300:1, 2500:2, 3500:5, 26000:50}
 
-#used to control the number of ticks on xaxis for chosen feature = AuctionMap
-dtickauction_dict = {700:1, 800:1, 900:1, 1800:1, 2100:1, 2300:1, 2500:1, 3500:1, 26000:1}
+# #used to control the number of ticks on xaxis for chosen feature = AuctionMap
+# dtickauction_dict = {700:1, 800:1, 900:1, 1800:1, 2100:1, 2300:1, 2500:1, 3500:1, 26000:1}
 
-# used to set the vertical line widths for the heatmap chart 
-xgap_dict = {700:1, 800:1, 900:0.5, 1800:0, 2100:1, 2300:1, 2500:1, 3500:1, 26000:1}
+# # used to set the vertical line widths for the heatmap chart 
+# xgap_dict = {700:1, 800:1, 900:0.5, 1800:0, 2100:1, 2300:1, 2500:1, 3500:1, 26000:1}
 
-#Minor adjustment for tool tip display data for channel frequency on heatmap
-#The reason is that the start freq of the spectrum tab is shifted delpberately by few MHz
-#This is to align the labels on the xaxis to align properly with the edge of the heatmap
-xaxisadj_dict = {700:1, 800:0.25, 900:0, 1800:0, 2100:1, 2300:1, 2500:2, 3500:0, 26000:0}
+# #Minor adjustment for tool tip display data for channel frequency on heatmap
+# #The reason is that the start freq of the spectrum tab is shifted delpberately by few MHz
+# #This is to align the labels on the xaxis to align properly with the edge of the heatmap
+# xaxisadj_dict = {700:1, 800:0.25, 900:0, 1800:0, 2100:1, 2300:1, 2500:2, 3500:0, 26000:0}
 
-#Setting the constant to describe the type of band TDD/FDD
-bandtype_dict = {700:"FDD", 800:"FDD", 900:"FDD", 1800:"FDD", 2100:"FDD", 2300:"TDD", 2500:"TDD", 3500:"TDD", 26000:"TDD"}
+# #Setting the constant to describe the type of band TDD/FDD
+# bandtype_dict = {700:"FDD", 800:"FDD", 900:"FDD", 1800:"FDD", 2100:"FDD", 2300:"TDD", 2500:"TDD", 3500:"TDD", 26000:"TDD"}
 
-#auctionfailyears when the auction prices for all LSAs were zero and there are no takers 
-auctionfailyears_dict = {700:["2016","2021"], 800:["2012"], 900:["2013","2016"], 1800:["2013"], 
-		2100:[], 2300:["2022", "2024"], 2500:["2021"], 3500:["2024"], 26000:["2024"]}
+# #auctionfailyears when the auction prices for all LSAs were zero and there are no takers 
+# auctionfailyears_dict = {700:["2016","2021"], 800:["2012"], 900:["2013","2016"], 1800:["2013"], 
+# 		2100:[], 2300:["2022", "2024"], 2500:["2021"], 3500:["2024"], 26000:["2024"]}
 
-#auction sucess years are years where at least in one of the LASs there was a winner
-auctionsucessyears_dict = {700:[2022], 
-		800:[2013, 2015, 2016, 2021, 2022], 
-		900:[2014, 2015, 2021, 2022, 2024], 
-		1800:[2012, 2014, 2015, 2016, 2021, 2022, 2024], 
-		2100:[2010, 2015, 2016, 2021, 2022, 2024], 
-		2300:[2010, 2016, 2021, 2022],  #added 2022 an as exception (due to error) need to revist the logic of succes and failure
-		2500:[2010, 2016, 2022, 2024], 
-		3500:[2022], 
-		26000:[2022]}
+# #auction sucess years are years where at least in one of the LASs there was a winner
+# auctionsucessyears_dict = {700:[2022], 
+# 		800:[2013, 2015, 2016, 2021, 2022], 
+# 		900:[2014, 2015, 2021, 2022, 2024], 
+# 		1800:[2012, 2014, 2015, 2016, 2021, 2022, 2024], 
+# 		2100:[2010, 2015, 2016, 2021, 2022, 2024], 
+# 		2300:[2010, 2016, 2021, 2022],  #added 2022 an as exception (due to error) need to revist the logic of succes and failure
+# 		2500:[2010, 2016, 2022, 2024], 
+# 		3500:[2022], 
+# 		26000:[2022]}
 
-#end of month auction completion dates dictionary for the purpose of evaluting rs-usd rates 
+# #end of month auction completion dates dictionary for the purpose of evaluting rs-usd rates 
 
-auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30),2013: datetime(2013,3,31), 2014: datetime(2014,2,28),
-					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
-					2024 : datetime(2024,6,3)}
+# auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30),2013: datetime(2013,3,31), 2014: datetime(2014,2,28),
+# 					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
+# 					2024 : datetime(2024,6,3)}
 
-#Error dicts defines the window width = difference between the auction closing date and the auction freq assignment dates
-#This values is used to map expiry year of a particular freq spot to the operator owning that spot
-# errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:0.1, 26000:0.5}
+# #Error dicts defines the window width = difference between the auction closing date and the auction freq assignment dates
+# #This values is used to map expiry year of a particular freq spot to the operator owning that spot
+# # errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:0.1, 26000:0.5}
 
-errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:1, 26000:10} #debug 2024 (Feb)
+# errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:1, 26000:10} #debug 2024 (Feb)
 
-list_of_circles_codes = ['AP','AS', 'BH', 'DL', 'GU', 'HA', 'HP', 'JK', 'KA', 'KE', 'KO', 'MA', 'MP',
-		   'MU', 'NE', 'OR', 'PU', 'RA', 'TN', 'UPE', 'UPW', 'WB']
+# list_of_circles_codes = ['AP','AS', 'BH', 'DL', 'GU', 'HA', 'HP', 'JK', 'KA', 'KE', 'KO', 'MA', 'MP',
+# 		   'MU', 'NE', 'OR', 'PU', 'RA', 'TN', 'UPE', 'UPW', 'WB']
 
-# #Debug 10th June 2024
-# year_band =["2010-Band2100","2010-Band2300", "2012-Band1800","2014-Band1800","2014-Band900",
-# 									"2015-Band800", "2015-Band900","2015-Band1800", "2015-Band2100", "2016-Band800","2016-Band1800",
-# 									"2016-Band2100", "2016-Band2300", "2016-Band2500","2021-Band700","2021-Band800","2021-Band900","2021-Band1800",
-# 									"2021-Band2100","2021-Band2300","2022-Band700","2022-Band800","2022-Band900","2022-Band1800",
-# 									"2022-Band2100","2022-Band2500","2022-Band3500","2022-Band26000"]
 
-# #Debug 19th June 2024
-# year_band_exp =["2021-Band800","2021-Band900","2021-Band1800","2021-Band2100","2021-Band2300"] # As the DOT auction data is incomplete for these years
-
-#Constants for Charts 
-heatmapheight = 900 #Height of Heatmaps
-heatmapwidth = 900 #Width of Heatmaps
-#Heatmap Chart Margins
-t=80
-b=60
-l=10
-r=10
-pad=0
-summarychartheight = 200 #Summary Chart at Bottom Height 
-text_embed_in_chart_size = 20 #Size of Text Embedded in all Charts 
-text_embed_in_hover_size = 16 #Size of Text Embedded in tooltips
-plot_row_total_chart_ht_mul = 1.018 #This multiplier aligns the row total chart with the heatmap
-stcol1 = 9 #No of Columns for Heatmap to Fit 
-stcol2 = 1 #No of Columns for row total chart to Fit
+# #Constants for Charts 
+# heatmapheight = 900 #Height of Heatmaps
+# heatmapwidth = 900 #Width of Heatmaps
+# #Heatmap Chart Margins
+# t=80
+# b=60
+# l=10
+# r=10
+# pad=0
+# summarychartheight = 200 #Summary Chart at Bottom Height 
+# text_embed_in_chart_size = 20 #Size of Text Embedded in all Charts 
+# text_embed_in_hover_size = 16 #Size of Text Embedded in tooltips
+# plot_row_total_chart_ht_mul = 1.018 #This multiplier aligns the row total chart with the heatmap
+# stcol1 = 9 #No of Columns for Heatmap to Fit 
+# stcol2 = 1 #No of Columns for row total chart to Fit
 
 
 #-----------All Constant Deceleration End and Function Starts from Here -----
