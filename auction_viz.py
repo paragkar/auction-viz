@@ -107,50 +107,6 @@ stcol1 = 9 #No of Columns for Heatmap to Fit
 stcol2 = 1 #No of Columns for row total chart to Fit
 
 
-# #preparing color scale for hoverbox for Spectrum and Expiry maps
-# @st.cache_resource
-# def colscale_hbox_spectrum_expiry_maps(operators, colcodes):
-# 	scale = [round(x/(len(operators)-1),2) for x in range(len(operators))]
-# 	colors =[]
-# 	for k, v  in operators.items():
-# 		colors.append(colcodes.loc[k,:].values[0])
-# 	colorscale=[]
-# 	for i in range(len(scale)):
-# 		colorscale.append([scale[i],colors[i]])
-# 	return colorscale
-
-# #shaping colorscale for driving the color of hoverbox of Spectrum and Expiry maps
-# @st.cache_resource
-# def transform_colscale_for_spec_exp_maps(colorscale, sf):
-# 	hlabel_bgcolor = [[x[1] for x in colorscale if x[0] == round(value/(len(colorscale) - 1),2)] 
-# 				  for row in sf.values for value in row]
-# 	hlabel_bgcolor = list(np.array(hlabel_bgcolor).reshape(22,int(len(hlabel_bgcolor)/22)))
-# 	return hlabel_bgcolor
-
-# #preparing and shaping the colors for hoverbox for auction map
-# @st.cache_resource
-# def transform_colscale_for_hbox_auction_map(dff,reserveprice, auctionprice): 
-# 	lst =[]
-# 	for yi, yy in enumerate(dff.index):
-# 		reserveprice = reserveprice.replace("NA\s*", np.nan, regex = True)
-# 		auctionprice = auctionprice.replace("NA\s*", np.nan, regex = True)
-# 		delta = auctionprice-reserveprice
-# 		delta = delta.replace(np.nan, "NA")
-# 		for xi, xx in enumerate(dff.columns):
-# 			delval = delta.values[yi][xi]
-# 			if delval =="NA":
-# 				ccode = '#000000' #auction failed #black
-# 			elif delval == 0:
-# 				ccode = '#008000' #auction price = reserve price #green
-# 			else:
-# 				ccode = '#FF0000' #auction price > reserve price #red
-# 			lst.append([yy,xx,ccode])
-# 			temp = pd.DataFrame(lst)
-# 			temp.columns = ["LSA", "Year", "Color"]
-# 			colormatrix = temp.pivot(index='LSA', columns='Year', values="Color")
-# 			colormatrix = list(colormatrix.values)
-# 	return colormatrix
-
 #function for preparing the summary chart 
 def summarychart(summarydf, xcolumn, ycolumn):
 	bar = alt.Chart(summarydf).mark_bar().encode(
@@ -279,24 +235,6 @@ with st.sidebar:
 #loading file rupee to USD and finding the exchange rate in the auction eom
 auction_eom_list = [x.date() for x in list(auction_eom_dates_dict.values())]
 
-# dfrsrate = loadrstousd()
-# auction_rsrate_dict ={} #the dictionary which stores all the values of the rupee usd rates
-# dfrsrate["Date"] = pd.to_datetime(dfrsrate["Date"])
-# dfrsrate = dfrsrate.set_index("Date").asfreq("ME")
-
-# for index in dfrsrate.index:
-# 	if index.date() in auction_eom_list:
-# 		auction_rsrate_dict[index.year] = dfrsrate.loc[index,:].values[0]
-
-
-# if selected_dimension == "AuctionYear Activity": #Incompete Still working this section
-
-# 	currency_flag = "NA" #This is dummy variiable for this option done to preserve the current structure of the code 
-
-# 	df = auctionbiddatayearactivitycomb()["Sheet1"] #Loading the auction bid year activity data
-
-# 	st.write(df)
-
 
 if selected_dimension == "AuctionYear AllBands": #This is the new dimension Added on June 2024
 
@@ -389,20 +327,6 @@ if selected_dimension == "AuctionYear AllBands": #This is the new dimension Adde
 
 	# Apply dimension filter
 	df = df[['Clock Round', 'Bidder', 'Service Area', 'Band', selected_dimension]]
-
-	# Clock Round selection
-	# clkrounds = sorted(df['Clock Round'].unique())
-	# with st.sidebar.form("round_form"):
-	# 	round_number = st.number_input("Select Auction Round Number"+";Total Rounds= "+str(max(clkrounds)), min_value=min(clkrounds), max_value=max(clkrounds), value=st.session_state.round_number)
-	# 	submitted = st.form_submit_button('Apply Round Number')
-	# 	if submitted:
-	# 		st.session_state.round_number = round_number
-	# 		# st.experimental_rerun() 
-
-	# df = filt_round(df, st.session_state.round_number)
-	# dftext = filt_round(dftext, st.session_state.round_number)
-	# dfcopy = filt_round(dfcopy, st.session_state.round_number)
-	# dfactvity = filt_round(dfactvity, st.session_state.round_number)
 
 
 	# Clock Round selection
