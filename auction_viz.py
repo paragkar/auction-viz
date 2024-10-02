@@ -60,29 +60,32 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 @st.cache_resource
 def loadauctionbiddatayearbandcomb():
-    password = st.secrets["db_password"]
-    excel_content = io.BytesIO()
-    with open("auctionbiddatayearbandcomb.xlsx", 'rb') as f:
-        excel = msoffcrypto.OfficeFile(f)
-        excel.load_key(password)  # Assuming password is required to access the file
-        excel.decrypt(excel_content)
+	password = st.secrets["db_password"]
+	excel_content = io.BytesIO()
+	with open("auctionbiddatayearbandcomb.xlsx", 'rb') as f:
+		excel = msoffcrypto.OfficeFile(f)
+		excel.load_key(password)
+		excel.decrypt(excel_content)
 
-    xl = pd.ExcelFile(excel_content)
-    df = pd.read_excel(excel_content, sheet_name=xl.sheet_names[0])
-    return df
+	xl = pd.ExcelFile(excel_content)
+	sheetauctiondata = xl.sheet_names
+	df = pd.read_excel(excel_content, sheet_name=sheetauctiondata)
+	return df
+
 
 @st.cache_resource
 def auctionbiddatayearactivitycomb():
-    password = st.secrets["db_password"]
-    excel_content = io.BytesIO()
-    with open("auctionbiddatayearactivitycomb.xlsx", 'rb') as f:
-        excel = msoffcrypto.OfficeFile(f)
-        excel.load_key(password)  # Assuming password is required to access the file
-        excel.decrypt(excel_content)
+	password = st.secrets["db_password"]
+	excel_content = io.BytesIO()
+	with open("auctionbiddatayearactivitycomb.xlsx", 'rb') as f:
+		excel = msoffcrypto.OfficeFile(f)
+		excel.load_key(password)
+		excel.decrypt(excel_content)
 
-    xl = pd.ExcelFile(excel_content)
-    df = pd.read_excel(excel_content, sheet_name=xl.sheet_names[0])
-    return df
+	xl = pd.ExcelFile(excel_content)
+	sheetauctiondata = xl.sheet_names
+	df = pd.read_excel(excel_content, sheet_name=sheetauctiondata)
+	return df
 
 #end of month auction completion dates dictionary for the purpose of evaluting rs-usd rates 
 
