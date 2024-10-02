@@ -107,180 +107,49 @@ stcol1 = 9 #No of Columns for Heatmap to Fit
 stcol2 = 1 #No of Columns for row total chart to Fit
 
 
-
-
-# #---------------Hovertest for Points Lost---------------------
-
+# #preparing color scale for hoverbox for Spectrum and Expiry maps
 # @st.cache_resource
-# def htext_auctiondata_2010_3G_BWA_PointsLost(dfbidactivity, dfbidactivityperc):
+# def colscale_hbox_spectrum_expiry_maps(operators, colcodes):
+# 	scale = [round(x/(len(operators)-1),2) for x in range(len(operators))]
+# 	colors =[]
+# 	for k, v  in operators.items():
+# 		colors.append(colcodes.loc[k,:].values[0])
+# 	colorscale=[]
+# 	for i in range(len(scale)):
+# 		colorscale.append([scale[i],colors[i]])
+# 	return colorscale
 
-
-# 	hovertext = []
-# 	for yi,yy in enumerate(dfbidactivity.index):
-# 		hovertext.append([])
-
-# 		for xi,xx in enumerate(dfbidactivity.columns):
-
-# 			pointslost = dfbidactivity.loc[yy,xx]
-# 			pointslostperc = dfbidactivityperc.loc[yy,xx]
-
-
-# 			hovertext[-1].append(
-# 						'Bidder: {}\
-# 						<br>Round No: {}\
-# 						<br>Points Lost : {} Nos\
-# 						<br>Points Lost : {} % of Initial'
-				
-# 					 .format( 
-# 						yy,
-# 						xx,
-# 						pointslost,
-# 						pointslostperc,
-# 						)
-# 						)
-
-# 	return hovertext
-
-
-# #---------------Hovertest for Points Lost Ends---------------------
-
-
-# #---------------Hovertest for BlocksAllocated Starts---------------------
-
+# #shaping colorscale for driving the color of hoverbox of Spectrum and Expiry maps
 # @st.cache_resource
-# def htext_auctiondata_2010_3G_BWA_BlocksAllocated(dftemp):
+# def transform_colscale_for_spec_exp_maps(colorscale, sf):
+# 	hlabel_bgcolor = [[x[1] for x in colorscale if x[0] == round(value/(len(colorscale) - 1),2)] 
+# 				  for row in sf.values for value in row]
+# 	hlabel_bgcolor = list(np.array(hlabel_bgcolor).reshape(22,int(len(hlabel_bgcolor)/22)))
+# 	return hlabel_bgcolor
 
-# 	dftemp = dftemp.sort_index(ascending=True)
-
-# 	hovertext = []
-# 	for yi,yy in enumerate(dftemp.index):
-# 		hovertext.append([])
-
-# 		for xi,xx in enumerate(dftemp.columns):
-
-# 			blocksalloc = dftemp.loc[yy,xx]
-# 			spectrumMHz = (dftemp.loc[yy,xx])*blocksize
-
-
-# 			hovertext[-1].append(
-# 						'Bidder: {}\
-# 						<br>Circle: {}\
-# 						<br>BLKs Allocated : {} Nos\
-# 						<br>Spectrum : {} MHz'
-				
-# 					 .format( 
-# 						yy,
-# 						xx,
-# 						blocksalloc,
-# 						round(spectrumMHz,2),
-# 						)
-# 						)
-
-# 	return hovertext
-
-
-# #---------------Hovertest for BlocksAllocated Ends---------------------
-
-
-
-# #---------------Hovertest for LastBidPrice Starts---------------------
-
+# #preparing and shaping the colors for hoverbox for auction map
 # @st.cache_resource
-# def htext_colormatrix_auctiondata_2010_3G_BWA_LastBidPrice(dflastsubbidheat,dflastsubbidratio,dfbid):
-
-
-# 	hovertext = []
-# 	dict_col = {}
-# 	for yi,yy in enumerate(dflastsubbidheat.index):
-# 		hovertext.append([])
-# 		list_col=[]
-# 		for xi,xx in enumerate(dflastsubbidheat.columns):
-
-# 			lastbid = dflastsubbidheat.loc[yy,xx]
-# 			lastbidratiorp = dflastsubbidratio.loc[yy,xx]
-# 			blocksforsale = dfbid.T.loc["Blocks For Sale",xx]
-
-# 			if lastbid > 0:
-# 				ccode = '#880808' #(red)
+# def transform_colscale_for_hbox_auction_map(dff,reserveprice, auctionprice): 
+# 	lst =[]
+# 	for yi, yy in enumerate(dff.index):
+# 		reserveprice = reserveprice.replace("NA\s*", np.nan, regex = True)
+# 		auctionprice = auctionprice.replace("NA\s*", np.nan, regex = True)
+# 		delta = auctionprice-reserveprice
+# 		delta = delta.replace(np.nan, "NA")
+# 		for xi, xx in enumerate(dff.columns):
+# 			delval = delta.values[yi][xi]
+# 			if delval =="NA":
+# 				ccode = '#000000' #auction failed #black
+# 			elif delval == 0:
+# 				ccode = '#008000' #auction price = reserve price #green
 # 			else:
-# 				ccode = '#808080' #(grey)
-
-# 			list_col.append(ccode)
-
-
-
-# 			hovertext[-1].append(
-# 						'Bidder: {}\
-# 						<br>Circle: {}\
-# 						<br>LastBid : {} RsCr/BLK\
-# 						<br>LastBidRatio : {} Bid/RP\
-# 						<br>BLKsForSale : {} Nos'
-				
-# 					 .format( 
-# 						yy,
-# 						xx,
-# 						lastbid,
-# 						round(lastbidratiorp,2),
-# 						blocksforsale,
-# 						)
-# 						)
-
-# 		dict_col[yy]=list_col
-
-# 	temp = pd.DataFrame(dict_col).T
-
-# 	temp.columns = dflastsubbidheat.columns
-
-# 	colormatrix = list(temp.values)
-
-# 	return hovertext, colormatrix
-
-
-# #---------------Hovertest for LastBidPrice Ends---------------------
-
-#preparing color scale for hoverbox for Spectrum and Expiry maps
-@st.cache_resource
-def colscale_hbox_spectrum_expiry_maps(operators, colcodes):
-	scale = [round(x/(len(operators)-1),2) for x in range(len(operators))]
-	colors =[]
-	for k, v  in operators.items():
-		colors.append(colcodes.loc[k,:].values[0])
-	colorscale=[]
-	for i in range(len(scale)):
-		colorscale.append([scale[i],colors[i]])
-	return colorscale
-
-#shaping colorscale for driving the color of hoverbox of Spectrum and Expiry maps
-@st.cache_resource
-def transform_colscale_for_spec_exp_maps(colorscale, sf):
-	hlabel_bgcolor = [[x[1] for x in colorscale if x[0] == round(value/(len(colorscale) - 1),2)] 
-				  for row in sf.values for value in row]
-	hlabel_bgcolor = list(np.array(hlabel_bgcolor).reshape(22,int(len(hlabel_bgcolor)/22)))
-	return hlabel_bgcolor
-
-#preparing and shaping the colors for hoverbox for auction map
-@st.cache_resource
-def transform_colscale_for_hbox_auction_map(dff,reserveprice, auctionprice): 
-	lst =[]
-	for yi, yy in enumerate(dff.index):
-		reserveprice = reserveprice.replace("NA\s*", np.nan, regex = True)
-		auctionprice = auctionprice.replace("NA\s*", np.nan, regex = True)
-		delta = auctionprice-reserveprice
-		delta = delta.replace(np.nan, "NA")
-		for xi, xx in enumerate(dff.columns):
-			delval = delta.values[yi][xi]
-			if delval =="NA":
-				ccode = '#000000' #auction failed #black
-			elif delval == 0:
-				ccode = '#008000' #auction price = reserve price #green
-			else:
-				ccode = '#FF0000' #auction price > reserve price #red
-			lst.append([yy,xx,ccode])
-			temp = pd.DataFrame(lst)
-			temp.columns = ["LSA", "Year", "Color"]
-			colormatrix = temp.pivot(index='LSA', columns='Year', values="Color")
-			colormatrix = list(colormatrix.values)
-	return colormatrix
+# 				ccode = '#FF0000' #auction price > reserve price #red
+# 			lst.append([yy,xx,ccode])
+# 			temp = pd.DataFrame(lst)
+# 			temp.columns = ["LSA", "Year", "Color"]
+# 			colormatrix = temp.pivot(index='LSA', columns='Year', values="Color")
+# 			colormatrix = list(colormatrix.values)
+# 	return colormatrix
 
 #function for preparing the summary chart 
 def summarychart(summarydf, xcolumn, ycolumn):
