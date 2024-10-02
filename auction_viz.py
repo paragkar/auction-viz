@@ -108,115 +108,11 @@ stcol2 = 1 #No of Columns for row total chart to Fit
 
 
 
-# #-----------------Hovertext for Provisional Winning Bids Starts----------------------
+
+# #---------------Hovertest for Points Lost---------------------
 
 # @st.cache_resource
-# def htext_colormatrix_auctiondata_2010_3G_BWA_ProvWinningBid(dfrp, dftemp, pwbtype, round_number):
-
-
-# 	dftemp = dftemp.sort_index(ascending=True)
-# 	dftemprpmul = round(dftemp/dfrp.values,1)
-
-# 	hovertext = []
-# 	dict_col={}
-# 	for yi,yy in enumerate(dftemp.index):
-# 		hovertext.append([])
-# 		list_col=[]
-# 		for xi,xx in enumerate(dftemp.columns):
-
-# 			pwb = dftemp.loc[yy,xx]
-# 			pwbmulofrp = dftemprpmul.loc[yy,xx]
-# 			if str(pwb)  == "nan":
-# 				ccode = '#808080' #(grey)
-# 			else:
-# 				ccode = '#228B22' #(green)
-
-# 			list_col.append(ccode)
-
-# 			hovertext[-1].append(
-# 						'Bidder: {}\
-# 						<br>Circle: {}\
-# 						<br>PWB : {} Rs Cr\
-# 						<br>PWB / Reserve P: {}\
-# 						<br>PWB Type : {}\
-# 						<br>Round No: {}'
-
-# 					 .format( 
-# 						yy,
-# 						state_dict[xx],
-# 						pwb,
-# 						pwbmulofrp,
-# 						pwbtype,
-# 						round_number,
-# 						)
-# 						)
-
-# 		dict_col[yy]=list_col
-
-# 	temp = pd.DataFrame(dict_col).T
-# 	temp.columns = dftemp.columns
-# 	colormatrix = list(temp.values)
-# 	return hovertext, colormatrix
-
-# #-----------------Hovertext for Provisional Winning Bids Ends----------------------
-
-
-# #---------------Hovertest for Demand Intensity---------------------
-
-# @st.cache_resource
-# def htext_auctiondata_2010_3G_BWA_DemandIntensity(dfbid,ADPrecOfBlksforSale):
-
-# 	dfbidaAD = dfbid.pivot(index="LSA", columns='Clock Round', values="Aggregate Demand").sort_index(ascending=True)
-
-# 	dfbidaED = dfbid.pivot(index="LSA", columns='Clock Round', values="Excess Demand").sort_index(ascending=True)
-
-# 	hovertext = []
-# 	for yi,yy in enumerate(dfbidaAD.index):
-# 		hovertext.append([])
-
-# 		for xi,xx in enumerate(dfbidaAD.columns):
-
-# 			aggdemand = dfbidaAD.loc[yy,xx]
-# 			aggdemperc = ADPrecOfBlksforSale.loc[yy,xx]
-# 			excessdemand = dfbidaED.loc[yy,xx]
-
-# 			hovertext[-1].append(
-# 						'Circle: {}\
-# 						<br>Round No: {}\
-# 						<br>Agg Demand : {} Blocks\
-# 						<br>Ratio (AD/Total) : {} \
-# 						<br>Excess Demand : {} Blocks'
-				
-
-# 					 .format( 
-# 						yy,
-# 						xx,
-# 						aggdemand,
-# 						aggdemperc,
-# 						excessdemand,
-# 						)
-# 						)
-
-# 	return hovertext
-
-
-# #---------------Hovertest for Demand Intensity Ends---------------------
-
-
-# #---------------Hovertest for Bidding Activity Total---------------------
-
-# @st.cache_resource
-# def htext_auctiondata_2010_3G_BWA_BiddingActivity(dfbid, column_name):
-
-# 	filt = dfbid["Clk_Round"]==1
-
-# 	dfbidRD1 = dfbid[filt]
-
-# 	dfbidactivity = dfbid.pivot(index="Bidder", columns='Clk_Round', values=column_name).sort_index(ascending=True)
-
-# 	dfbidactivityRd1 = dfbidRD1.pivot(index="Bidder", columns='Clk_Round', values="Pts_Start_Round").sort_index(ascending=True)
-
-# 	dfbidactivityratio = round((dfbidactivity/dfbidactivityRd1.values),2)
+# def htext_auctiondata_2010_3G_BWA_PointsLost(dfbidactivity, dfbidactivityperc):
 
 
 # 	hovertext = []
@@ -225,159 +121,122 @@ stcol2 = 1 #No of Columns for row total chart to Fit
 
 # 		for xi,xx in enumerate(dfbidactivity.columns):
 
-# 			pointsinplay = dfbidactivity.loc[yy,xx]
-# 			pointsratio = dfbidactivityratio.loc[yy,xx]
+# 			pointslost = dfbidactivity.loc[yy,xx]
+# 			pointslostperc = dfbidactivityperc.loc[yy,xx]
 
 
 # 			hovertext[-1].append(
 # 						'Bidder: {}\
 # 						<br>Round No: {}\
-# 						<br>Points in Play : {} Nos\
-# 						<br>Ratio (Actual/Initial) : {}'
+# 						<br>Points Lost : {} Nos\
+# 						<br>Points Lost : {} % of Initial'
 				
 # 					 .format( 
 # 						yy,
 # 						xx,
-# 						pointsinplay,
-# 						pointsratio,
+# 						pointslost,
+# 						pointslostperc,
 # 						)
 # 						)
 
 # 	return hovertext
 
 
-# #---------------Hovertest for Bidding Activity Total Ends---------------------
+# #---------------Hovertest for Points Lost Ends---------------------
 
 
+# #---------------Hovertest for BlocksAllocated Starts---------------------
 
-#---------------Hovertest for Points Lost---------------------
+# @st.cache_resource
+# def htext_auctiondata_2010_3G_BWA_BlocksAllocated(dftemp):
 
-@st.cache_resource
-def htext_auctiondata_2010_3G_BWA_PointsLost(dfbidactivity, dfbidactivityperc):
+# 	dftemp = dftemp.sort_index(ascending=True)
+
+# 	hovertext = []
+# 	for yi,yy in enumerate(dftemp.index):
+# 		hovertext.append([])
+
+# 		for xi,xx in enumerate(dftemp.columns):
+
+# 			blocksalloc = dftemp.loc[yy,xx]
+# 			spectrumMHz = (dftemp.loc[yy,xx])*blocksize
 
 
-	hovertext = []
-	for yi,yy in enumerate(dfbidactivity.index):
-		hovertext.append([])
-
-		for xi,xx in enumerate(dfbidactivity.columns):
-
-			pointslost = dfbidactivity.loc[yy,xx]
-			pointslostperc = dfbidactivityperc.loc[yy,xx]
-
-
-			hovertext[-1].append(
-						'Bidder: {}\
-						<br>Round No: {}\
-						<br>Points Lost : {} Nos\
-						<br>Points Lost : {} % of Initial'
+# 			hovertext[-1].append(
+# 						'Bidder: {}\
+# 						<br>Circle: {}\
+# 						<br>BLKs Allocated : {} Nos\
+# 						<br>Spectrum : {} MHz'
 				
-					 .format( 
-						yy,
-						xx,
-						pointslost,
-						pointslostperc,
-						)
-						)
+# 					 .format( 
+# 						yy,
+# 						xx,
+# 						blocksalloc,
+# 						round(spectrumMHz,2),
+# 						)
+# 						)
 
-	return hovertext
-
-
-#---------------Hovertest for Points Lost Ends---------------------
+# 	return hovertext
 
 
-#---------------Hovertest for BlocksAllocated Starts---------------------
-
-@st.cache_resource
-def htext_auctiondata_2010_3G_BWA_BlocksAllocated(dftemp):
-
-	dftemp = dftemp.sort_index(ascending=True)
-
-	hovertext = []
-	for yi,yy in enumerate(dftemp.index):
-		hovertext.append([])
-
-		for xi,xx in enumerate(dftemp.columns):
-
-			blocksalloc = dftemp.loc[yy,xx]
-			spectrumMHz = (dftemp.loc[yy,xx])*blocksize
+# #---------------Hovertest for BlocksAllocated Ends---------------------
 
 
-			hovertext[-1].append(
-						'Bidder: {}\
-						<br>Circle: {}\
-						<br>BLKs Allocated : {} Nos\
-						<br>Spectrum : {} MHz'
+
+# #---------------Hovertest for LastBidPrice Starts---------------------
+
+# @st.cache_resource
+# def htext_colormatrix_auctiondata_2010_3G_BWA_LastBidPrice(dflastsubbidheat,dflastsubbidratio,dfbid):
+
+
+# 	hovertext = []
+# 	dict_col = {}
+# 	for yi,yy in enumerate(dflastsubbidheat.index):
+# 		hovertext.append([])
+# 		list_col=[]
+# 		for xi,xx in enumerate(dflastsubbidheat.columns):
+
+# 			lastbid = dflastsubbidheat.loc[yy,xx]
+# 			lastbidratiorp = dflastsubbidratio.loc[yy,xx]
+# 			blocksforsale = dfbid.T.loc["Blocks For Sale",xx]
+
+# 			if lastbid > 0:
+# 				ccode = '#880808' #(red)
+# 			else:
+# 				ccode = '#808080' #(grey)
+
+# 			list_col.append(ccode)
+
+
+
+# 			hovertext[-1].append(
+# 						'Bidder: {}\
+# 						<br>Circle: {}\
+# 						<br>LastBid : {} RsCr/BLK\
+# 						<br>LastBidRatio : {} Bid/RP\
+# 						<br>BLKsForSale : {} Nos'
 				
-					 .format( 
-						yy,
-						xx,
-						blocksalloc,
-						round(spectrumMHz,2),
-						)
-						)
+# 					 .format( 
+# 						yy,
+# 						xx,
+# 						lastbid,
+# 						round(lastbidratiorp,2),
+# 						blocksforsale,
+# 						)
+# 						)
 
-	return hovertext
+# 		dict_col[yy]=list_col
 
+# 	temp = pd.DataFrame(dict_col).T
 
-#---------------Hovertest for BlocksAllocated Ends---------------------
+# 	temp.columns = dflastsubbidheat.columns
 
+# 	colormatrix = list(temp.values)
 
-
-#---------------Hovertest for LastBidPrice Starts---------------------
-
-@st.cache_resource
-def htext_colormatrix_auctiondata_2010_3G_BWA_LastBidPrice(dflastsubbidheat,dflastsubbidratio,dfbid):
-
-
-	hovertext = []
-	dict_col = {}
-	for yi,yy in enumerate(dflastsubbidheat.index):
-		hovertext.append([])
-		list_col=[]
-		for xi,xx in enumerate(dflastsubbidheat.columns):
-
-			lastbid = dflastsubbidheat.loc[yy,xx]
-			lastbidratiorp = dflastsubbidratio.loc[yy,xx]
-			blocksforsale = dfbid.T.loc["Blocks For Sale",xx]
-
-			if lastbid > 0:
-				ccode = '#880808' #(red)
-			else:
-				ccode = '#808080' #(grey)
-
-			list_col.append(ccode)
+# 	return hovertext, colormatrix
 
 
-
-			hovertext[-1].append(
-						'Bidder: {}\
-						<br>Circle: {}\
-						<br>LastBid : {} RsCr/BLK\
-						<br>LastBidRatio : {} Bid/RP\
-						<br>BLKsForSale : {} Nos'
-				
-					 .format( 
-						yy,
-						xx,
-						lastbid,
-						round(lastbidratiorp,2),
-						blocksforsale,
-						)
-						)
-
-		dict_col[yy]=list_col
-
-	temp = pd.DataFrame(dict_col).T
-
-	temp.columns = dflastsubbidheat.columns
-
-	colormatrix = list(temp.values)
-
-	return hovertext, colormatrix
-
-
-#---------------Hovertest for LastBidPrice Ends---------------------
+# #---------------Hovertest for LastBidPrice Ends---------------------
 
 #preparing color scale for hoverbox for Spectrum and Expiry maps
 @st.cache_resource
