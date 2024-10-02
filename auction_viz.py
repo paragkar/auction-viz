@@ -93,7 +93,6 @@ auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30)
 					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
 					2024 : datetime(2024,6,3)}
 
-
 #--------Constants for Charts ---------------------
 
 # Height and width settings for heatmaps
@@ -113,7 +112,6 @@ plot_row_total_chart_ht_mul = 1.018
 
 # Streamlit column width settings for heatmap and row total chart
 stcol1, stcol2 = 9, 1
-
 
 
 #function for preparing the summary chart 
@@ -219,7 +217,6 @@ def select_round_range(total_rounds):
 		max_round = min_round + 1
 
 	return min_round, max_round
-#------------------------- debug 30th Mar 2024
 
 
 #**********  Main Program Starts here ***************
@@ -759,7 +756,7 @@ if selected_dimension == "AuctionYear AllBands": #This is the new dimension Adde
 	<span style='color: #FF33F6;'>Activity Factor: {activity_factor_for_selected_round:.1f}</span>
 	"""
 
-	st.markdown(f"<h1 style='font-size:40px; margin-top: -40px;'>{title_text}</h1>", unsafe_allow_html=True)
+	st.markdown(f"<h1 style='font-size:20px; margin-top: -40px;'>{title_text}</h1>", unsafe_allow_html=True)
 
 
 	# Display the figure in Streamlit
