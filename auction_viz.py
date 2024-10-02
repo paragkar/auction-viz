@@ -107,425 +107,78 @@ stcol1 = 9 #No of Columns for Heatmap to Fit
 stcol2 = 1 #No of Columns for row total chart to Fit
 
 
-# #-----------All Constant Deceleration End and Function Starts from Here -----
 
-
-
-# #This function processes the hovertext for Feature expiry map, and SubFeature Freq Layout
-# @st.cache_resource
-# def htext_expmap_freq_layout(sf):
-# 	hovertext = []
-# 	for yi, yy in enumerate(sf.index):
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(sf.columns):
-# 			if exptab_dict[Band]==1: #1 means that the expiry table in the excel sheet has been set and working 
-# 				expiry = round(ef.values[yi][xi],2)
-# 			else:
-# 				expiry = "NA"
-# 			try:
-# 				auction_year = round(ayear.loc[yy,round(xx-xaxisadj_dict[Band],3)])
-# 			except:
-# 				auction_year ="NA"
-# 			operatornew = sff.values[yi][xi]
-# 			operatorold = of.values[yi][xi]
-# 			bandwidthexpiring = bandexpf.values[yi][xi]
-# 			bandwidth = bandf.values[yi][xi]
-# 			hovertext[-1].append(
-# 						'StartFreq: {} MHz\
-# 						 <br>Channel Size : {} MHz\
-# 						 <br>Circle : {}\
-# 							 <br>Operator: {}\
-# 						 <br>Expiring BW: {} of {} MHz\
-# 						 <br>Expiring In: {} Years\
-# 						 <br>Acquired In: {} by {}'
-
-# 					 .format(
-# 						round(xx-xaxisadj_dict[Band],2),
-# 						channelsize_dict[Band],
-# 						state_dict.get(yy),
-# 						operatornew,
-# 						bandwidthexpiring,
-# 						bandwidth,
-# 						expiry,
-# 						auction_year,
-# 						operatorold,
-# 						)
-# 						)
-# 	return hovertext
-
-# #This function is used for processing hovertext for Feature expiry map, and subfeature Yearly Trends with operator selection "All"
-# @st.cache_resource
-# def htext_expmap_yearly_trends_with_all_select(bwf,eff): 
-# 	bwf["Op&BW"] = bwf["Operators"]+" - "+round(bwf["BW"],2).astype(str)+" MHz"
-# 	bwff = bwf.set_index("LSA").drop(['Operators'], axis=1)
-# 	xaxisyears = sorted(list(set(bwff["ExpYear"])))[1:]
-# 	hovertext = []
-# 	for yi, yy in enumerate(eff.index):
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(xaxisyears):
-# 			opwiseexpMHz = list(bwff[(bwff["ExpYear"]==xx) & (bwff.index ==yy)]["Op&BW"].values)
-# 			if opwiseexpMHz==[]:
-# 				opwiseexpMHz="NA"
-# 			else:
-# 				opwiseexpMHz = ', '.join(str(e) for e in opwiseexpMHz) #converting a list into string
-
-# 			TotalBW = list(bwff[(bwff["ExpYear"]==xx) & (bwff.index ==yy)]["BW"].values)
-			
-# 			if TotalBW==[]:
-# 				TotalBW="NA"
-# 			else:
-# 				TotalBW = round(sum([float(x) for x in TotalBW]),2)
-
-# 			hovertext[-1].append(
-# 						'{} : Expiry in {} Years\
-# 						<br />Break Up : {}'
-
-# 					 .format(
-# 						state_dict.get(yy),
-# 						xx, 
-# 						opwiseexpMHz,
-# 						)
-# 						)
-# 	return hovertext
-
-
-# #processing for hovertext for Fearure expiry map, and SubFeature Yearly Trends along with operator menue
-# @st.cache_resource
-# def htext_expmap_yearly_trends_with_op_select(eff): 
-# 	hovertext = []
-# 	for yi, yy in enumerate(eff.index):
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(eff.columns):
-
-# 			hovertext[-1].append(
-# 						'Circle: {}\
-# 						<br />Expiring In: {} Years'
-
-# 					 .format(
-# 						state_dict.get(yy),
-# 						xx, 
-# 						)
-# 						)
-# 	return hovertext
-	
-# #This if for processing for hovertext for the Feature Auction Map
-# @st.cache_resource
-# def htext_auctionmap(dff): 
-# 	hovertext=[]
-# 	for yi, yy in enumerate(dff.index):
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(dff.columns):
-# 			winners = dff.values[yi][xi][:-2] #removing comma in the end
-# 			resprice = reserveprice.values[yi][xi]
-# 			aucprice = auctionprice.values[yi][xi]
-# 			offmhz = offeredspectrum.values[yi][xi]
-# 			soldmhz = soldspectrum.values[yi][xi]
-# 			unsoldmhz = unsoldspectrum.values[yi][xi]
-
-# 			hovertext[-1].append(
-# 						'{} , {}\
-# 						 <br / >RP/AP: Rs {}/ {} Cr/MHz\
-# 						 <br / >Offered/Sold/Unsold: {} / {} / {} MHz\
-# 						 <br>Winners: {}'
-
-# 					 .format( 
-# 						state_dict.get(yy),
-# 						xx,
-# 						resprice,
-# 						aucprice,
-# 						round(offmhz,2),
-# 						round(soldmhz,2),
-# 						round(unsoldmhz,2),
-# 						winners,
-# 						)
-# 						)
-# 	return hovertext
-
-
-# #processing for hovertext and colormatrix for Spectrum Band, Features- Spectrum Map, SubFeature - Operator Holdings 
-# @st.cache_resource
-# def htext_colmatrix_spec_map_op_hold_share(dfff, selected_operators, operatorlist):
-
-# 	operators_to_process = list(dfff.columns)
-# 	dfffcopy =dfff.copy()
-# 	dfffcopy["Total"] = dfffcopy.sum(axis=1)
-# 	lst =[]
-
-# 	dfffshare = pd.DataFrame()
-# 	for op in operators_to_process:
-# 		dfffcopy[op+"1"] = dfffcopy[op]/dfffcopy["Total"]
-# 		lst.append(op+"1")
-	
-# 	dfffshare = dfffcopy[lst]
-# 	for col in dfffshare.columns:
-# 		dfffshare.rename(columns = {col:col[:-1]}, inplace = True) #stripping the last digit "1"
-
-# 	hovertext=[]
-# 	lst = []
-# 	for yi, yy in enumerate(dfffshare.index):
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(dfffshare.columns):
-# 			share = dfffshare.values[yi][xi]
-# 			holdings = dfff.values[yi][xi]
-			
-# 			if share >= 0.4 :
-# 				ccode = '#008000' #% spectrum share more than 40% (green)
-# 			elif (share < 0.4) & (share >= 0.2):
-# 				ccode = '#808080' # spectrum share between 40 to 20% (grey)
-# 			else:
-# 				ccode = '#FF0000' # spectrum share less than 20% (red)
-# 			lst.append([yy,xx,ccode])
-# 			temp = pd.DataFrame(lst)
-# 			temp.columns = ["Circle", "Operator", "Color"]
-# 			colormatrix = temp.pivot(index='Circle', columns='Operator', values="Color")
-# 			colormatrix = list(colormatrix.values)
-			
-# 			hovertext[-1].append(
-# 						'Circle: {}\
-# 						 <br>Operator: {}\
-# 						 <br>Holdings: {} MHz\
-# 						 <br>Market Share: {} %'
-
-# 					 .format( 
-# 						state_dict.get(yy),
-# 						xx,
-# 						round(holdings,2),
-# 						round(share*100,2),
-# 						)
-# 						)
-# 	return hovertext, colormatrix
-
-
-# #processing for hovertext and colormatrix for Dim - Auction Years, Fearure - Band Metric, SubFeatures Reserve Price etc
-# @st.cache_resource
-# def htext_colmatrix_auction_year_band_metric(df1):
-# 	auctionprice =  df1.pivot(index="Circle", columns='Band', values=subfeature_dict["Auction Price"])
-# 	reserveprice =  df1.pivot(index="Circle", columns='Band', values=subfeature_dict["Reserve Price"])
-# 	qtyoffered = df1.pivot(index="Circle", columns='Band', values=subfeature_dict["Quantum Offered"])
-# 	qtysold = df1.pivot(index="Circle", columns='Band', values=subfeature_dict["Quantum Sold"])
-# 	qtyunsold = df1.pivot(index="Circle", columns='Band', values=subfeature_dict["Quantum Unsold"])
-	
-# 	hovertext=[]
-# 	lst = []
-# 	for yi, yy in enumerate(reserveprice.index):
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(reserveprice.columns):
-# 			resprice = reserveprice.values[yi][xi]
-# 			aucprice = auctionprice.values[yi][xi]
-# 			offered = qtyoffered.values[yi][xi]
-# 			sold = qtysold.values[yi][xi]
-# 			unsold = qtyunsold.values[yi][xi]
-# 			delta = round(aucprice - resprice,0)
-# 			if delta < 0 :
-# 				ccode = '#000000' #auction failed (black)
-# 			elif delta == 0:
-# 				ccode = '#008000' #auction price = reserve price (green)
-# 			elif delta > 0:
-# 				ccode = '#FF0000' #auction price > reserve price (red)
-# 			else:
-# 				ccode = '#C0C0C0' #No Auction (silver)
-# 			lst.append([yy,xx,ccode])
-# 			temp = pd.DataFrame(lst)
-# 			temp.columns = ["Circle", "Year", "Color"]
-# 			colormatrix = temp.pivot(index='Circle', columns='Year', values="Color")
-# 			colormatrix = list(colormatrix.values)
-			
-# 			hovertext[-1].append(
-# 						'Circle: {}\
-# 						 <br>Band: {} MHz\
-# 						 <br>Reserve Price: {} Rs Cr/MHz\
-# 						 <br>Auction Price: {} Rs Cr/MHz\
-# 						 <br>Offered: {} MHz\
-# 						 <br>Sold: {} MHz\
-# 						 <br>Unsold: {} MHz'
-
-# 					 .format( 
-# 						state_dict.get(yy),
-# 						xx,
-# 						round(resprice,1),
-# 						round(aucprice,1),
-# 						round(offered,2),
-# 						round(sold,2),
-# 						round(unsold,2),
-# 						)
-# 						)
-# 	return hovertext, colormatrix
-
-# #processing for hovertext and colormatrix for Auction Year, Operator Metric, SubFeatures - Total Outflow, Total Purchase
-# @st.cache_resource
-# def htext_colmatrix_auction_year_operator_metric(df1, selectedbands, SelectedSubFeature, df_subfeature):    
-# 	temp1 = pd.DataFrame()
-# 	if selectedbands != []:
-# 		for band in selectedbands:
-# 			temp2= df1[df1["Band"]==band]
-# 			temp1 = pd.concat([temp2,temp1], axis =0)
-# 		df1  = temp1
-	
-# 	if SelectedSubFeature == "Total Purchase": #then process for total purchase
-# 		df_purchase = df_subfeature
-# 	else: 
-# 		columnstoextract = ["Circle", "Band"]+oldoperators_dict[Year]
-# 		df2_temp2 = df1[columnstoextract]
-# 		df2_temp2.drop("Band", inplace = True, axis =1)
-# 		df2_temp2 = df2_temp2.groupby(["Circle"]).sum().round(2)
-# 		df2_temp2 = df2_temp2.reindex(sorted(df2_temp2.columns), axis=1)
-# 		df_purchase = df2_temp2
-	
-# 	if SelectedSubFeature == "Total Ouflow": #then process for total outflow
-# 		df_outflow = df_subfeature
-# 	else:
-# 		operators_dim_cy_new=[]
-# 		for op in oldoperators_dict[Year]:
-# 			df1[op+"1"] = df1["Auction Price/MHz"]*df1[op]
-# 			operators_dim_cy_new.append(op+"1")
-# 		columnstoextract = ["Circle", "Band"]+operators_dim_cy_new
-# 		df2_temp1 = df1[columnstoextract]
-# 		operators_dim_cy_new = [x[:-1] for x in operators_dim_cy_new] # removing the last letter "1" from operator name
-# 		df2_temp1.columns = ["Circle", "Band"]+ operators_dim_cy_new
-# 		df2_temp1.drop("Band", inplace = True, axis =1)
-# 		df2_temp1 = df2_temp1.groupby(["Circle"]).sum().round(0)
-# 		df2_temp1 = df2_temp1.reindex(sorted(df2_temp1.columns), axis=1)
-# 		df_outflow = df2_temp1
-	
-# 	hovertext=[]
-# 	lst = []
-# 	for yi, yy in enumerate(df_subfeature.index): #dataframe of total outflow (any one of them can be used)
-# 		hovertext.append([])
-# 		for xi, xx in enumerate(df_subfeature.columns): #dataframe of total outflow (any one of them can be used)
-# 			outflow = df_outflow.values[yi][xi]
-# 			purchase = df_purchase.values[yi][xi]
-# 			if outflow > 0 :
-# 				ccode = '#008000' # Purchased (green)
-# 			else:
-# 				ccode = '#C0C0C0' #No Purchase (silver)
-# 			lst.append([yy,xx,ccode])
-# 			temp = pd.DataFrame(lst)
-# 			temp.columns = ["Circle", "Operator", "Color"]
-# 			colormatrix = temp.pivot(index='Circle', columns='Operator', values="Color")
-# 			colormatrix = list(colormatrix.values)
-			
-# 			hovertext[-1].append(
-# 						'Circle: {}\
-# 						 <br>Operator: {}\
-# 						 <br>Outflow: {} Rs Cr\
-# 						 <br>Purchase: {} MHz'
-
-# 					 .format( 
-# 						state_dict.get(yy),
-# 						xx,
-# 						round(outflow,0),
-# 						round(purchase,2),
-# 						)
-# 						)
-# 	return hovertext, colormatrix
-
-
-# #---------------Hovertest for BlocksAllocated Starts---------------------
+# #processing hovertext for auction data 
 
 # @st.cache_resource
-# def htext_businessdata_FinancialSPWise(df_finmetric,df_finmetric_prec,df_finmetricINC):
+# def htext_colormatrix_auctiondata_2010_3G_BWA_BidsCircleWise(dfbidcirclwise, dftemp, selected_lsa,start_round,end_round,dfprovallcblks_endrd):
+
+# 	filt_last_round = (dfbidcirclwise["Clk_Round"] == end_round)
+
+# 	dfbidcirclwiselastrd = dfbidcirclwise[filt_last_round].drop(columns = ["Clk_Round","PWB_Start_ClkRd","Rank_PWB_Start_ClkRd",
+# 		"Possible_Raise_Bid_ClkRd","Bid_Decision","PWB_End_ClkRd"], axis =1).reset_index()
+
+# 	dfbidcirclwiselastrd = dfbidcirclwiselastrd.pivot(index="Bidder", columns='LSA', values="Rank_PWB_End_ClkRd").sort_index(ascending=False)
+# 	dftempheatperc = dftemp.pivot(index="Bidder", columns='LSA', values="Bid_Decision_Perc")
+# 	dftempheatperc = dftempheatperc.sort_values(selected_lsa, ascending = True)
+# 	dftempheatabs = dftemp.pivot(index="Bidder", columns='LSA', values="Bid_Decision")
+# 	dftempheatabs = dftempheatabs.sort_values(selected_lsa, ascending = True)
+
 
 # 	hovertext = []
-# 	for yi,yy in enumerate(df_finmetric.index):
+# 	dict_col={}
+# 	dict_result={}
+# 	for yi,yy in enumerate(dftempheatabs.index):
 # 		hovertext.append([])
+# 		list_col=[]
+# 		list_result=[]
+# 		for xi,xx in enumerate(dftempheatabs.columns):
 
-# 		for xi,xx in enumerate(df_finmetric.columns):
+# 			totalbidsagg = dftempheatabs.loc[yy,xx]
+# 			totalbissperc = dftempheatperc.loc[yy,xx]
+# 			totalblksrdend = dfprovallcblks_endrd.loc[yy,xx]
+# 			finalrank = dfbidcirclwiselastrd.loc[yy,xx]
+		
+# 			if finalrank in [1,2,3,4]:
+# 				result = "WON"
+# 				ccode = '#008000' #(green)
+# 			else:
+# 				result = "LOST"
+# 				ccode = '#FF0000' #(red)
 
-# 			absvalue = df_finmetric.loc[yy,xx]
-# 			percentoftotal = df_finmetric_prec.loc[yy,xx]
-# 			increments = df_finmetricINC.loc[yy,xx]
+# 			list_result.append(result)
+
+# 			list_col.append(ccode)
 
 # 			hovertext[-1].append(
 # 						'Bidder: {}\
-# 						<br>Date: {}\
-# 						<br>Abs Value : {} Rs K Cr\
-# 						<br>Perc : {} of Total \
-# 						<br>Increments : {} Rs K Cr'
-				
+# 						<br>Circle: {}\
+# 						<br>Agg Bids : {} Nos\
+# 						<br>Agg Bids: {} % of Total\
+# 						<br>Prov Result : {}\
+# 						<br>Prov Rank: {}\
+# 						<br>Prov BLKs: {}'
+
 # 					 .format( 
 # 						yy,
-# 						xx,
-# 						absvalue,
-# 						percentoftotal,
-# 						round(increments,2),
+# 						state_dict[xx],
+# 						totalbidsagg,
+# 						round(totalbissperc,2),
+# 						result,
+# 						finalrank,
+# 						round(totalblksrdend,0),
 # 						)
 # 						)
 
-# 	return hovertext
+# 		dict_col[yy]=list_col
+# 		dict_result[yy]=list_result
 
-# #---------------Hovertest for BlocksAllocated Ends--------------------- 
-
-#processing hovertext for auction data 
-
-@st.cache_resource
-def htext_colormatrix_auctiondata_2010_3G_BWA_BidsCircleWise(dfbidcirclwise, dftemp, selected_lsa,start_round,end_round,dfprovallcblks_endrd):
-
-	filt_last_round = (dfbidcirclwise["Clk_Round"] == end_round)
-
-	dfbidcirclwiselastrd = dfbidcirclwise[filt_last_round].drop(columns = ["Clk_Round","PWB_Start_ClkRd","Rank_PWB_Start_ClkRd",
-		"Possible_Raise_Bid_ClkRd","Bid_Decision","PWB_End_ClkRd"], axis =1).reset_index()
-
-	dfbidcirclwiselastrd = dfbidcirclwiselastrd.pivot(index="Bidder", columns='LSA', values="Rank_PWB_End_ClkRd").sort_index(ascending=False)
-	dftempheatperc = dftemp.pivot(index="Bidder", columns='LSA', values="Bid_Decision_Perc")
-	dftempheatperc = dftempheatperc.sort_values(selected_lsa, ascending = True)
-	dftempheatabs = dftemp.pivot(index="Bidder", columns='LSA', values="Bid_Decision")
-	dftempheatabs = dftempheatabs.sort_values(selected_lsa, ascending = True)
-
-
-	hovertext = []
-	dict_col={}
-	dict_result={}
-	for yi,yy in enumerate(dftempheatabs.index):
-		hovertext.append([])
-		list_col=[]
-		list_result=[]
-		for xi,xx in enumerate(dftempheatabs.columns):
-
-			totalbidsagg = dftempheatabs.loc[yy,xx]
-			totalbissperc = dftempheatperc.loc[yy,xx]
-			totalblksrdend = dfprovallcblks_endrd.loc[yy,xx]
-			finalrank = dfbidcirclwiselastrd.loc[yy,xx]
-		
-			if finalrank in [1,2,3,4]:
-				result = "WON"
-				ccode = '#008000' #(green)
-			else:
-				result = "LOST"
-				ccode = '#FF0000' #(red)
-
-			list_result.append(result)
-
-			list_col.append(ccode)
-
-			hovertext[-1].append(
-						'Bidder: {}\
-						<br>Circle: {}\
-						<br>Agg Bids : {} Nos\
-						<br>Agg Bids: {} % of Total\
-						<br>Prov Result : {}\
-						<br>Prov Rank: {}\
-						<br>Prov BLKs: {}'
-
-					 .format( 
-						yy,
-						state_dict[xx],
-						totalbidsagg,
-						round(totalbissperc,2),
-						result,
-						finalrank,
-						round(totalblksrdend,0),
-						)
-						)
-
-		dict_col[yy]=list_col
-		dict_result[yy]=list_result
-
-	temp = pd.DataFrame(dict_col).T
-	temp.columns = dftempheatabs.columns
-	resultdf = pd.DataFrame(dict_result).T
-	resultdf.columns = dftempheatabs.columns 
-	colormatrix = list(temp.values)
-	return hovertext, colormatrix, resultdf
+# 	temp = pd.DataFrame(dict_col).T
+# 	temp.columns = dftempheatabs.columns
+# 	resultdf = pd.DataFrame(dict_result).T
+# 	resultdf.columns = dftempheatabs.columns 
+# 	colormatrix = list(temp.values)
+# 	return hovertext, colormatrix, resultdf
 
 
 #-----------------Hovertext for Provisional Winning Bids Starts----------------------
