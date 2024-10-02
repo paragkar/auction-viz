@@ -55,6 +55,17 @@ header {visibility: hidden;}
 '''
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
+# Set custom styles for Streamlit widgets, including sidebar menu font size
+custom_css = """
+<style>
+    /* Targeting the sidebar menu */
+    .css-1d391kg {font-size: 12px;}  /* You may need to use the browser's developer tools to find the correct class for your version of Streamlit */
+    /* Additional targets can be specified as needed */
+</style>
+"""
+
+st.markdown(custom_css, unsafe_allow_html=True)
+
 
 #--------Functions for Loading Files with Caching---------------------
 
