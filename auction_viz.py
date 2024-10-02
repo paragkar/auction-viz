@@ -84,6 +84,13 @@ def auctionbiddatayearactivitycomb():
     df = pd.read_excel(excel_content, sheet_name=xl.sheet_names[0])
     return df
 
+#end of month auction completion dates dictionary for the purpose of evaluting rs-usd rates 
+
+auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30),2013: datetime(2013,3,31), 2014: datetime(2014,2,28),
+					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
+					2024 : datetime(2024,6,3)}
+
+
 #--------Constants for Charts ---------------------
 
 # Height and width settings for heatmaps
