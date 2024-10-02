@@ -1,53 +1,61 @@
-#importing libraries
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.subplots as sp
-import numpy as np
-from collections import OrderedDict
-from plotly.subplots import make_subplots
-from streamlit_option_menu import option_menu
-import plotly
-import pandas as pd
-import plotly.figure_factory as ff
-import streamlit as st
-import matplotlib.pyplot as plt
-import altair as alt
-from datetime import datetime
-import datetime as dt 
-import calendar
-import time
-from PIL import Image
-from dateutil import relativedelta
-import re
-from collections import defaultdict
+# Standard library imports
+from collections import OrderedDict, defaultdict
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-import io
-import msoffcrypto
-import pickle
 from pathlib import Path
+import calendar
+import io
+import pickle
+import re
+import time
+
+# Third-party imports for data handling
+import numpy as np
+import pandas as pd
+from PIL import Image
+
+# Cryptography and authentication
+import msoffcrypto
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
-from deta import Deta
+
+# Data visualization libraries
+import altair as alt
+import matplotlib.pyplot as plt
+import plotly
+import plotly.express as px
+import plotly.figure_factory as ff
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import seaborn as sns
 
+# Streamlit specific
+import streamlit as st
+from streamlit_option_menu import option_menu
+
+# YAML for configuration
+import yaml
+from yaml.loader import SafeLoader
+
+# Deta Base for cloud storage (if used in your app)
+from deta import Deta
+
+# Set pandas options
 pd.set_option('future.no_silent_downcasting', True)
 
-
-#Set page layout here
+# Streamlit page configuration
 st.set_page_config(layout="wide")
 
-
-#--------hide streamlit style and buttons--------------
-
+# Hide Streamlit style and buttons
 hide_st_style = '''
-				<style>
-				#MainMenu {visibility : hidden;}
-				footer {visibility : hidder;}
-				header {visibility :hidden;}
-				<style>
-				'''
-st.markdown(hide_st_style, unsafe_allow_html =True)
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+'''
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
+
 
 #--------Functions for loading File Starts---------------------
 
@@ -100,7 +108,7 @@ l=10
 r=10
 pad=0
 summarychartheight = 200 #Summary Chart at Bottom Height 
-text_embed_in_chart_size = 15 #Size of Text Embedded in all Charts 
+text_embed_in_chart_size = 12 #Size of Text Embedded in all Charts 
 text_embed_in_hover_size = 16 #Size of Text Embedded in tooltips
 plot_row_total_chart_ht_mul = 1.018 #This multiplier aligns the row total chart with the heatmap
 stcol1 = 9 #No of Columns for Heatmap to Fit 
