@@ -39,10 +39,10 @@ st.set_page_config(layout="wide")
 
 
 
-#--------Fuctions, Constants, Configurations and Flags-------------
+# #--------Fuctions, Constants, Configurations and Flags-------------
 
 
-SummaryFlag = False # Code below will toggle to True to show summary chart
+# SummaryFlag = False # Code below will toggle to True to show summary chart
 
 #--------hide streamlit style and buttons--------------
 
@@ -94,15 +94,6 @@ def auctionbiddatayearactivitycomb():
 auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30),2013: datetime(2013,3,31), 2014: datetime(2014,2,28),
 					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
 					2024 : datetime(2024,6,3)}
-
-# #Error dicts defines the window width = difference between the auction closing date and the auction freq assignment dates
-# #This values is used to map expiry year of a particular freq spot to the operator owning that spot
-# # errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:0.1, 26000:0.5}
-
-# errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:1, 26000:10} #debug 2024 (Feb)
-
-# list_of_circles_codes = ['AP','AS', 'BH', 'DL', 'GU', 'HA', 'HP', 'JK', 'KA', 'KE', 'KO', 'MA', 'MP',
-# 		   'MU', 'NE', 'OR', 'PU', 'RA', 'TN', 'UPE', 'UPW', 'WB']
 
 
 #Constants for Charts 
