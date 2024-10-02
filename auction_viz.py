@@ -55,15 +55,15 @@ header {visibility: hidden;}
 '''
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# Set custom styles for Streamlit widgets, including sidebar menu font size
+# Custom CSS to change font size in the sidebar menu
 custom_css = """
 <style>
-    /* Targeting the sidebar menu */
-    .css-1d391kg {font-size: 12px;}  /* You may need to use the browser's developer tools to find the correct class for your version of Streamlit */
-    /* Additional targets can be specified as needed */
+    /* Targeting sidebar menu title */
+    .css-1d391kg .st-bj {font-size: 14px;}
+    /* Targeting sidebar menu options */
+    .css-1d391kg .st-af {font-size: 12px;}
 </style>
 """
-
 st.markdown(custom_css, unsafe_allow_html=True)
 
 
