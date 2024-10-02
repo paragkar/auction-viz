@@ -232,30 +232,13 @@ def select_round_range(total_rounds):
 
 #**********  Main Program Starts here ***************
 
-# authenticator.logout("Logout", "sidebar") #logging out authentication
-# st.sidebar.title(f"Welcome {name}")
-# image = Image.open('parag_kar.jpg') #debug
-# st.sidebar.image(image) #debug
-
 #set flags extracting chart data in the data tab
 chart_data_flag = False #set this to true only if this chart exists.
-
-# with st.sidebar:
-# 	selected_dimension = option_menu(
-# 		menu_title = "Select a Menu",
-# 		options = [ "AuctionYear AllBands"], #Debug 14th June 2024
-# 		# icons = ["1-circle-fill", ],
-# 		# menu_icon = "arrow-down-circle-fill",
-# 		default_index =0,
-# 		)
 
 #loading file rupee to USD and finding the exchange rate in the auction eom
 auction_eom_list = [x.date() for x in list(auction_eom_dates_dict.values())]
 
-
-# if selected_dimension == "AuctionYear AllBands": #This is the new dimension Added on June 2024
-
-currency_flag = "NA" #This is dummy variiable for this option done to preserve the current structure of the code 
+# currency_flag = "NA" #This is dummy variiable for this option done to preserve the current structure of the code 
 
 def filt_round(df, round_number):
 	# Filter the dataframe based on the round number
