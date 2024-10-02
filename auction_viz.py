@@ -189,31 +189,31 @@ auction_eom_dates_dict = {2010 : datetime(2010,6,30), 2012: datetime(2012,11,30)
 					2015 : datetime(2015,3,31), 2016 : datetime(2016,10,31), 2021: datetime(2021,3,31), 2022: datetime(2022,8,31),
 					2024 : datetime(2024,6,3)}
 
-# #Error dicts defines the window width = difference between the auction closing date and the auction freq assignment dates
-# #This values is used to map expiry year of a particular freq spot to the operator owning that spot
-# # errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:0.1, 26000:0.5}
+#Error dicts defines the window width = difference between the auction closing date and the auction freq assignment dates
+#This values is used to map expiry year of a particular freq spot to the operator owning that spot
+# errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:0.1, 26000:0.5}
 
-# errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:1, 26000:10} #debug 2024 (Feb)
+errors_dict= {700:0.25, 800:1, 900:1, 1800:1, 2100:1.5, 2300:1.25, 2500:1, 3500:1, 26000:10} #debug 2024 (Feb)
 
-# list_of_circles_codes = ['AP','AS', 'BH', 'DL', 'GU', 'HA', 'HP', 'JK', 'KA', 'KE', 'KO', 'MA', 'MP',
-# 		   'MU', 'NE', 'OR', 'PU', 'RA', 'TN', 'UPE', 'UPW', 'WB']
+list_of_circles_codes = ['AP','AS', 'BH', 'DL', 'GU', 'HA', 'HP', 'JK', 'KA', 'KE', 'KO', 'MA', 'MP',
+		   'MU', 'NE', 'OR', 'PU', 'RA', 'TN', 'UPE', 'UPW', 'WB']
 
 
-# #Constants for Charts 
-# heatmapheight = 900 #Height of Heatmaps
-# heatmapwidth = 900 #Width of Heatmaps
-# #Heatmap Chart Margins
-# t=80
-# b=60
-# l=10
-# r=10
-# pad=0
-# summarychartheight = 200 #Summary Chart at Bottom Height 
-# text_embed_in_chart_size = 20 #Size of Text Embedded in all Charts 
-# text_embed_in_hover_size = 16 #Size of Text Embedded in tooltips
-# plot_row_total_chart_ht_mul = 1.018 #This multiplier aligns the row total chart with the heatmap
-# stcol1 = 9 #No of Columns for Heatmap to Fit 
-# stcol2 = 1 #No of Columns for row total chart to Fit
+#Constants for Charts 
+heatmapheight = 900 #Height of Heatmaps
+heatmapwidth = 900 #Width of Heatmaps
+#Heatmap Chart Margins
+t=80
+b=60
+l=10
+r=10
+pad=0
+summarychartheight = 200 #Summary Chart at Bottom Height 
+text_embed_in_chart_size = 20 #Size of Text Embedded in all Charts 
+text_embed_in_hover_size = 16 #Size of Text Embedded in tooltips
+plot_row_total_chart_ht_mul = 1.018 #This multiplier aligns the row total chart with the heatmap
+stcol1 = 9 #No of Columns for Heatmap to Fit 
+stcol2 = 1 #No of Columns for row total chart to Fit
 
 
 #-----------All Constant Deceleration End and Function Starts from Here -----
