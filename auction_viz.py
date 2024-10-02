@@ -38,12 +38,6 @@ pd.set_option('future.no_silent_downcasting', True)
 st.set_page_config(layout="wide")
 
 
-
-# #--------Fuctions, Constants, Configurations and Flags-------------
-
-
-# SummaryFlag = False # Code below will toggle to True to show summary chart
-
 #--------hide streamlit style and buttons--------------
 
 hide_st_style = '''
@@ -113,218 +107,218 @@ stcol1 = 9 #No of Columns for Heatmap to Fit
 stcol2 = 1 #No of Columns for row total chart to Fit
 
 
-#-----------All Constant Deceleration End and Function Starts from Here -----
+# #-----------All Constant Deceleration End and Function Starts from Here -----
 
-#Wrapper Function Auction BandWise Selected Feature
-def get_value(feature_dict, feature_key, var_name):
-	"""
-	Retrieves a value from a nested dictionary using the variable name as the key.
-	Args:
-	- feature_dict (dict): The main dictionary containing feature data.
-	- feature_key (str): The key to access the specific feature data.
-	- var_name (str): The variable name used as the key in the nested dictionary.
-	Returns:
-	- The value from the nested dictionary or 'Key not found' if the key does not exist.
-	"""
-	return feature_dict.get(feature_key, {}).get(var_name, "Key not found")
-
-
-#function to count number of items in a list and outputs the result as dictionary
-#Used to extract data table for Spectrum Layout Dimension when it is filtered by Operators             
-def count_items_in_dataframe(df):
-	counts = {}
-
-	for col in df.columns:
-		for idx, item in enumerate(df[col]):
-			if isinstance(item, (int, float)) and not pd.isnull(item):
-				# item_key = str(item)  # Convert float item to string
-				item_key = int(item) #adding this item solved the problem
-				if item_key not in counts:
-					counts[item_key] = [0] * len(df)
-				counts[item_key][idx] += 1
-
-	df_counts = pd.DataFrame.from_dict(counts, orient='columns')
-	return df_counts
+# #Wrapper Function Auction BandWise Selected Feature
+# def get_value(feature_dict, feature_key, var_name):
+# 	"""
+# 	Retrieves a value from a nested dictionary using the variable name as the key.
+# 	Args:
+# 	- feature_dict (dict): The main dictionary containing feature data.
+# 	- feature_key (str): The key to access the specific feature data.
+# 	- var_name (str): The variable name used as the key in the nested dictionary.
+# 	Returns:
+# 	- The value from the nested dictionary or 'Key not found' if the key does not exist.
+# 	"""
+# 	return feature_dict.get(feature_key, {}).get(var_name, "Key not found")
 
 
-#function used to prepare the color scale for the freqmap
-@st.cache_resource
-def colscalefreqlayout(operators, colcodes):
-	operators = dict(sorted(operators.items(), key=lambda x:x[1]))
-	operator_names = list(operators.keys())
-	operator_codes = list(operators.values())
-	scale = [round(x/(len(operators)),2) for x in range(len(operator_names)+1)]
-	colorscale =[]
-	for i, op in enumerate(operator_names):
-		if op in colcodes.index:
-			colorscale.append([scale[i],colcodes.loc[op,:][0]])
-	colorscale.append([1, np.nan])
-	col= pd.DataFrame(colorscale)
-	col.columns =["colscale", "colors"]
-	col["colscaleshift"] = col.iloc[:,0].shift(-1)
-	col = col.iloc[:-1,:]
-	colorscale=[]
-	for line in col.values:
-		colorscale.append((line[0],line[1]))
-		colorscale.append((line[2],line[1]))
-	return colorscale
+# #function to count number of items in a list and outputs the result as dictionary
+# #Used to extract data table for Spectrum Layout Dimension when it is filtered by Operators             
+# def count_items_in_dataframe(df):
+# 	counts = {}
 
-#function used for calculating the expiry year heatmap for the subfeature yearly trends
-@st.cache_resource
-def exp_year_cal_yearly_trends(ef, selected_operator):
-	lst1 =[]
-	for i, line1 in enumerate(ef.values):
-		explst = list(set(line1))
-		l1 = [[ef.index[i],round(list(line1).count(x)*channelsize_dict[Band],2), round(x,2)] for x in explst]
-		lst1.append(l1)
+# 	for col in df.columns:
+# 		for idx, item in enumerate(df[col]):
+# 			if isinstance(item, (int, float)) and not pd.isnull(item):
+# 				# item_key = str(item)  # Convert float item to string
+# 				item_key = int(item) #adding this item solved the problem
+# 				if item_key not in counts:
+# 					counts[item_key] = [0] * len(df)
+# 				counts[item_key][idx] += 1
 
-	lst2 =[]
-	for i, val in enumerate(lst1):
-		for item in val:
-			lst2.append(item)
-	df = pd.DataFrame(lst2)
-	df.columns = ["LSA", "Spectrum", "ExpYrs"]
-	df = df.groupby(['LSA','ExpYrs']).sum()
-	df = df.reset_index()
-	df = df.pivot(index ='LSA', columns ='ExpYrs', values ='Spectrum') 
-	df.columns = [str(x) for x in df.columns]
-	if selected_operator == "All":
-		df = df.iloc[:,1:]
-	else:
-		pass
-	df = df.fillna(0)
-	return df
+# 	df_counts = pd.DataFrame.from_dict(counts, orient='columns')
+# 	return df_counts
 
-#function used for calculating the quantum of spectrum expiring mapped to LSA and Years 
-#This is for feature expiry map and the subfeature yearly trends 
-@st.cache_resource
-def bw_exp_cal_yearly_trends(sff,ef):
-	lst=[]
-	for j, index in enumerate(ef.index):
-		for i, col in enumerate(ef.columns):
-			l= [index, sff.iloc[j,i],ef.iloc[j,i]]
-			lst.append(l)
-			
-	df = pd.DataFrame(lst)
-	df.columns = ["LSA","Operators", "ExpYear"]
-	df = df.groupby(["ExpYear"])[["LSA","Operators"]].value_counts()*channelsize_dict[Band]
-	df = df.reset_index()
-	df.columns =["ExpYear","LSA", "Operators","BW"]
-	return df
 
-#funtion used for processing pricing datframe for hovertext for the feature auction map
-#The feature auction map is under the dimension Spectrum Bands
+# #function used to prepare the color scale for the freqmap
 # @st.cache_resource
-def cal_bw_mapped_to_operators_auctionmap(dff):
-	dff = dff.replace(0,np.nan).fillna(0)
-	dff = dff.map(lambda x: round(x,2) if type(x)!=str else x)
-	dff = dff[(dff["Band"]==Band) & (dff["Cat"]=="L") & (dff["OperatorOld"] != "Free") & (dff["Year"] >= 2010)]
-	dff = dff.drop(['OperatorNew', 'Band','Cat'], axis = 1)
-	for col in dff.columns[3:]:
-		dff[col]=dff[col].astype(float)
-	dff = dff.groupby(["OperatorOld", "Year"]).sum()
-	dff = dff.drop(['Batch No',], axis = 1) 
-	if bandtype_dict[Band]=="TDD": #doubling the TDD spectrum for aligning with normal convention 
-		dff = (dff*2).round(2)
-	dff = dff.replace(0,"")
-	dff= dff.reset_index().set_index("Year")
-	dff =dff.replace("Voda Idea","VI")
-	dff = dff.replace("Vodafone", "Voda")
-	dff = dff.astype(str)
-	lst =[]
-	for index, row in zip(dff.index,dff.values):
-		lst.append([index]+[row[0]+" "+x+" MHz, " for x in row[1:]])
-	temp = pd.DataFrame(lst)
-	col = dff.reset_index().columns
-	col = list(col)
-	col.pop(1)
-	temp.columns = col
-	temp = temp.replace('[a-zA-Z]+\s+MHz, ',"", regex = True)
-	dff = temp.groupby("Year").sum()
-	dff =dff.T
-	dff = dff.reset_index()
-	dff.columns = ["LSA"]+auctionsucessyears_dict[Band]
-	dff = dff.set_index("LSA")
-	return dff
+# def colscalefreqlayout(operators, colcodes):
+# 	operators = dict(sorted(operators.items(), key=lambda x:x[1]))
+# 	operator_names = list(operators.keys())
+# 	operator_codes = list(operators.values())
+# 	scale = [round(x/(len(operators)),2) for x in range(len(operator_names)+1)]
+# 	colorscale =[]
+# 	for i, op in enumerate(operator_names):
+# 		if op in colcodes.index:
+# 			colorscale.append([scale[i],colcodes.loc[op,:][0]])
+# 	colorscale.append([1, np.nan])
+# 	col= pd.DataFrame(colorscale)
+# 	col.columns =["colscale", "colors"]
+# 	col["colscaleshift"] = col.iloc[:,0].shift(-1)
+# 	col = col.iloc[:-1,:]
+# 	colorscale=[]
+# 	for line in col.values:
+# 		colorscale.append((line[0],line[1]))
+# 		colorscale.append((line[2],line[1]))
+# 	return colorscale
 
-#This general function for converting columns of dataframe into string
-@st.cache_resource
-def coltostr(df):
-	lst =[]
-	for col in df.columns:
-		lst.append(str(col))
-	df.columns=lst
-	return df
+# #function used for calculating the expiry year heatmap for the subfeature yearly trends
+# @st.cache_resource
+# def exp_year_cal_yearly_trends(ef, selected_operator):
+# 	lst1 =[]
+# 	for i, line1 in enumerate(ef.values):
+# 		explst = list(set(line1))
+# 		l1 = [[ef.index[i],round(list(line1).count(x)*channelsize_dict[Band],2), round(x,2)] for x in explst]
+# 		lst1.append(l1)
 
-#This functions adds dummy columns to the dataframe for auction failed years
-@st.cache_resource
-def adddummycols(df,col):
-	df[col]="NA  " # space with NA is delibelitratly added.
-	cols = sorted(df.columns)
-	df =df[cols]
-	return df
+# 	lst2 =[]
+# 	for i, val in enumerate(lst1):
+# 		for item in val:
+# 			lst2.append(item)
+# 	df = pd.DataFrame(lst2)
+# 	df.columns = ["LSA", "Spectrum", "ExpYrs"]
+# 	df = df.groupby(['LSA','ExpYrs']).sum()
+# 	df = df.reset_index()
+# 	df = df.pivot(index ='LSA', columns ='ExpYrs', values ='Spectrum') 
+# 	df.columns = [str(x) for x in df.columns]
+# 	if selected_operator == "All":
+# 		df = df.iloc[:,1:]
+# 	else:
+# 		pass
+# 	df = df.fillna(0)
+# 	return df
 
-#This function maps the year in which the spectrum was acquired
-@st.cache_resource
-def cal_year_spectrum_acquired(ef,excepf,pf1):
-	lst=[]
-	for col in ef.columns:
-		for i, (efval,excepfval) in enumerate(zip(ef[col].values, excepf[col].values)):
-			for j, pf1val in enumerate(pf1.values):
-				if excepfval == 0:
-					error = abs(efval-pf1val[6]) #orignal
-				else:
-					error = 0
-				if (ef.index[i] == pf1val[0]) and error <= errors_dict[Band]:
-					lst.append([ef.index[i],col-xaxisadj_dict[Band],pf1val[1],pf1val[2], pf1val[3], pf1val[4], error]) 
+# #function used for calculating the quantum of spectrum expiring mapped to LSA and Years 
+# #This is for feature expiry map and the subfeature yearly trends 
+# @st.cache_resource
+# def bw_exp_cal_yearly_trends(sff,ef):
+# 	lst=[]
+# 	for j, index in enumerate(ef.index):
+# 		for i, col in enumerate(ef.columns):
+# 			l= [index, sff.iloc[j,i],ef.iloc[j,i]]
+# 			lst.append(l)
+			
+# 	df = pd.DataFrame(lst)
+# 	df.columns = ["LSA","Operators", "ExpYear"]
+# 	df = df.groupby(["ExpYear"])[["LSA","Operators"]].value_counts()*channelsize_dict[Band]
+# 	df = df.reset_index()
+# 	df.columns =["ExpYear","LSA", "Operators","BW"]
+# 	return df
+
+# #funtion used for processing pricing datframe for hovertext for the feature auction map
+# #The feature auction map is under the dimension Spectrum Bands
+# # @st.cache_resource
+# def cal_bw_mapped_to_operators_auctionmap(dff):
+# 	dff = dff.replace(0,np.nan).fillna(0)
+# 	dff = dff.map(lambda x: round(x,2) if type(x)!=str else x)
+# 	dff = dff[(dff["Band"]==Band) & (dff["Cat"]=="L") & (dff["OperatorOld"] != "Free") & (dff["Year"] >= 2010)]
+# 	dff = dff.drop(['OperatorNew', 'Band','Cat'], axis = 1)
+# 	for col in dff.columns[3:]:
+# 		dff[col]=dff[col].astype(float)
+# 	dff = dff.groupby(["OperatorOld", "Year"]).sum()
+# 	dff = dff.drop(['Batch No',], axis = 1) 
+# 	if bandtype_dict[Band]=="TDD": #doubling the TDD spectrum for aligning with normal convention 
+# 		dff = (dff*2).round(2)
+# 	dff = dff.replace(0,"")
+# 	dff= dff.reset_index().set_index("Year")
+# 	dff =dff.replace("Voda Idea","VI")
+# 	dff = dff.replace("Vodafone", "Voda")
+# 	dff = dff.astype(str)
+# 	lst =[]
+# 	for index, row in zip(dff.index,dff.values):
+# 		lst.append([index]+[row[0]+" "+x+" MHz, " for x in row[1:]])
+# 	temp = pd.DataFrame(lst)
+# 	col = dff.reset_index().columns
+# 	col = list(col)
+# 	col.pop(1)
+# 	temp.columns = col
+# 	temp = temp.replace('[a-zA-Z]+\s+MHz, ',"", regex = True)
+# 	dff = temp.groupby("Year").sum()
+# 	dff =dff.T
+# 	dff = dff.reset_index()
+# 	dff.columns = ["LSA"]+auctionsucessyears_dict[Band]
+# 	dff = dff.set_index("LSA")
+# 	return dff
+
+# #This general function for converting columns of dataframe into string
+# @st.cache_resource
+# def coltostr(df):
+# 	lst =[]
+# 	for col in df.columns:
+# 		lst.append(str(col))
+# 	df.columns=lst
+# 	return df
+
+# #This functions adds dummy columns to the dataframe for auction failed years
+# @st.cache_resource
+# def adddummycols(df,col):
+# 	df[col]="NA  " # space with NA is delibelitratly added.
+# 	cols = sorted(df.columns)
+# 	df =df[cols]
+# 	return df
+
+# #This function maps the year in which the spectrum was acquired
+# @st.cache_resource
+# def cal_year_spectrum_acquired(ef,excepf,pf1):
+# 	lst=[]
+# 	for col in ef.columns:
+# 		for i, (efval,excepfval) in enumerate(zip(ef[col].values, excepf[col].values)):
+# 			for j, pf1val in enumerate(pf1.values):
+# 				if excepfval == 0:
+# 					error = abs(efval-pf1val[6]) #orignal
+# 				else:
+# 					error = 0
+# 				if (ef.index[i] == pf1val[0]) and error <= errors_dict[Band]:
+# 					lst.append([ef.index[i],col-xaxisadj_dict[Band],pf1val[1],pf1val[2], pf1val[3], pf1val[4], error]) 
 				
-	df_final = pd.DataFrame(lst)
+# 	df_final = pd.DataFrame(lst)
 
-	df_final.columns = ["LSA", "StartFreq", "TP", "RP", "AP", "Year", "Error"]
-	df_final["Year"] = df_final["Year"].astype(int)
-	ayear = df_final.pivot_table(index=["LSA"], columns='StartFreq', values="Year", aggfunc='first').fillna("NA")
-	return ayear
+# 	df_final.columns = ["LSA", "StartFreq", "TP", "RP", "AP", "Year", "Error"]
+# 	df_final["Year"] = df_final["Year"].astype(int)
+# 	ayear = df_final.pivot_table(index=["LSA"], columns='StartFreq', values="Year", aggfunc='first').fillna("NA")
+# 	return ayear
   
-#This fuctions processes the hovertext for the Feature Spectrum Map, and Sub Feature Frequency Layout
-@st.cache_resource
-def htext_specmap_freq_layout(sf):  
-	hovertext = []
-	for yi, yy in enumerate(sf.index):
-		hovertext.append([])
-		for xi, xx in enumerate(sf.columns):
-			if exptab_dict[Band]==1: #1 means that the expiry table in the excel sheet has been set and working 
-				expiry = round(ef.values[yi][xi],2)
-			else:
-				expiry = "NA"
-			try:
-				auction_year = round(ayear.loc[yy,round(xx-xaxisadj_dict[Band],3)])
-			except:
-				auction_year ="NA"
+# #This fuctions processes the hovertext for the Feature Spectrum Map, and Sub Feature Frequency Layout
+# @st.cache_resource
+# def htext_specmap_freq_layout(sf):  
+# 	hovertext = []
+# 	for yi, yy in enumerate(sf.index):
+# 		hovertext.append([])
+# 		for xi, xx in enumerate(sf.columns):
+# 			if exptab_dict[Band]==1: #1 means that the expiry table in the excel sheet has been set and working 
+# 				expiry = round(ef.values[yi][xi],2)
+# 			else:
+# 				expiry = "NA"
+# 			try:
+# 				auction_year = round(ayear.loc[yy,round(xx-xaxisadj_dict[Band],3)])
+# 			except:
+# 				auction_year ="NA"
 				
-			operatornew = sff.values[yi][xi]
-			operatorold = of.values[yi][xi]
-			bandwidth = bandf.values[yi][xi]
-			hovertext[-1].append(
-						'StartFreq: {} MHz\
-						 <br>Channel Size : {} MHz\
-						 <br>Circle : {}\
-							 <br>Operator: {}\
-						 <br>Total BW: {} MHz\
-						 <br>ChExp In: {} Years\
-						 <br>Acquired In: {} by {}'
+# 			operatornew = sff.values[yi][xi]
+# 			operatorold = of.values[yi][xi]
+# 			bandwidth = bandf.values[yi][xi]
+# 			hovertext[-1].append(
+# 						'StartFreq: {} MHz\
+# 						 <br>Channel Size : {} MHz\
+# 						 <br>Circle : {}\
+# 							 <br>Operator: {}\
+# 						 <br>Total BW: {} MHz\
+# 						 <br>ChExp In: {} Years\
+# 						 <br>Acquired In: {} by {}'
 
-					 .format(
-						round(xx-xaxisadj_dict[Band],2),
-						channelsize_dict[Band],
-						state_dict.get(yy),
-						operatornew,
-						bandwidth,
-						expiry,
-						auction_year,
-						operatorold,
-						)
-						)
-	return hovertext
+# 					 .format(
+# 						round(xx-xaxisadj_dict[Band],2),
+# 						channelsize_dict[Band],
+# 						state_dict.get(yy),
+# 						operatornew,
+# 						bandwidth,
+# 						expiry,
+# 						auction_year,
+# 						operatorold,
+# 						)
+# 						)
+# 	return hovertext
 
 #This function processes the hovertext for Feature expiry map, and SubFeature Freq Layout
 @st.cache_resource
