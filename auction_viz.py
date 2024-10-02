@@ -108,218 +108,145 @@ stcol2 = 1 #No of Columns for row total chart to Fit
 
 
 
-# #processing hovertext for auction data 
+# #-----------------Hovertext for Provisional Winning Bids Starts----------------------
 
 # @st.cache_resource
-# def htext_colormatrix_auctiondata_2010_3G_BWA_BidsCircleWise(dfbidcirclwise, dftemp, selected_lsa,start_round,end_round,dfprovallcblks_endrd):
+# def htext_colormatrix_auctiondata_2010_3G_BWA_ProvWinningBid(dfrp, dftemp, pwbtype, round_number):
 
-# 	filt_last_round = (dfbidcirclwise["Clk_Round"] == end_round)
 
-# 	dfbidcirclwiselastrd = dfbidcirclwise[filt_last_round].drop(columns = ["Clk_Round","PWB_Start_ClkRd","Rank_PWB_Start_ClkRd",
-# 		"Possible_Raise_Bid_ClkRd","Bid_Decision","PWB_End_ClkRd"], axis =1).reset_index()
-
-# 	dfbidcirclwiselastrd = dfbidcirclwiselastrd.pivot(index="Bidder", columns='LSA', values="Rank_PWB_End_ClkRd").sort_index(ascending=False)
-# 	dftempheatperc = dftemp.pivot(index="Bidder", columns='LSA', values="Bid_Decision_Perc")
-# 	dftempheatperc = dftempheatperc.sort_values(selected_lsa, ascending = True)
-# 	dftempheatabs = dftemp.pivot(index="Bidder", columns='LSA', values="Bid_Decision")
-# 	dftempheatabs = dftempheatabs.sort_values(selected_lsa, ascending = True)
-
+# 	dftemp = dftemp.sort_index(ascending=True)
+# 	dftemprpmul = round(dftemp/dfrp.values,1)
 
 # 	hovertext = []
 # 	dict_col={}
-# 	dict_result={}
-# 	for yi,yy in enumerate(dftempheatabs.index):
+# 	for yi,yy in enumerate(dftemp.index):
 # 		hovertext.append([])
 # 		list_col=[]
-# 		list_result=[]
-# 		for xi,xx in enumerate(dftempheatabs.columns):
+# 		for xi,xx in enumerate(dftemp.columns):
 
-# 			totalbidsagg = dftempheatabs.loc[yy,xx]
-# 			totalbissperc = dftempheatperc.loc[yy,xx]
-# 			totalblksrdend = dfprovallcblks_endrd.loc[yy,xx]
-# 			finalrank = dfbidcirclwiselastrd.loc[yy,xx]
-		
-# 			if finalrank in [1,2,3,4]:
-# 				result = "WON"
-# 				ccode = '#008000' #(green)
+# 			pwb = dftemp.loc[yy,xx]
+# 			pwbmulofrp = dftemprpmul.loc[yy,xx]
+# 			if str(pwb)  == "nan":
+# 				ccode = '#808080' #(grey)
 # 			else:
-# 				result = "LOST"
-# 				ccode = '#FF0000' #(red)
-
-# 			list_result.append(result)
+# 				ccode = '#228B22' #(green)
 
 # 			list_col.append(ccode)
 
 # 			hovertext[-1].append(
 # 						'Bidder: {}\
 # 						<br>Circle: {}\
-# 						<br>Agg Bids : {} Nos\
-# 						<br>Agg Bids: {} % of Total\
-# 						<br>Prov Result : {}\
-# 						<br>Prov Rank: {}\
-# 						<br>Prov BLKs: {}'
+# 						<br>PWB : {} Rs Cr\
+# 						<br>PWB / Reserve P: {}\
+# 						<br>PWB Type : {}\
+# 						<br>Round No: {}'
 
 # 					 .format( 
 # 						yy,
 # 						state_dict[xx],
-# 						totalbidsagg,
-# 						round(totalbissperc,2),
-# 						result,
-# 						finalrank,
-# 						round(totalblksrdend,0),
+# 						pwb,
+# 						pwbmulofrp,
+# 						pwbtype,
+# 						round_number,
 # 						)
 # 						)
 
 # 		dict_col[yy]=list_col
-# 		dict_result[yy]=list_result
 
 # 	temp = pd.DataFrame(dict_col).T
-# 	temp.columns = dftempheatabs.columns
-# 	resultdf = pd.DataFrame(dict_result).T
-# 	resultdf.columns = dftempheatabs.columns 
+# 	temp.columns = dftemp.columns
 # 	colormatrix = list(temp.values)
-# 	return hovertext, colormatrix, resultdf
+# 	return hovertext, colormatrix
+
+# #-----------------Hovertext for Provisional Winning Bids Ends----------------------
 
 
-#-----------------Hovertext for Provisional Winning Bids Starts----------------------
+# #---------------Hovertest for Demand Intensity---------------------
 
-@st.cache_resource
-def htext_colormatrix_auctiondata_2010_3G_BWA_ProvWinningBid(dfrp, dftemp, pwbtype, round_number):
+# @st.cache_resource
+# def htext_auctiondata_2010_3G_BWA_DemandIntensity(dfbid,ADPrecOfBlksforSale):
 
+# 	dfbidaAD = dfbid.pivot(index="LSA", columns='Clock Round', values="Aggregate Demand").sort_index(ascending=True)
 
-	dftemp = dftemp.sort_index(ascending=True)
-	dftemprpmul = round(dftemp/dfrp.values,1)
+# 	dfbidaED = dfbid.pivot(index="LSA", columns='Clock Round', values="Excess Demand").sort_index(ascending=True)
 
-	hovertext = []
-	dict_col={}
-	for yi,yy in enumerate(dftemp.index):
-		hovertext.append([])
-		list_col=[]
-		for xi,xx in enumerate(dftemp.columns):
+# 	hovertext = []
+# 	for yi,yy in enumerate(dfbidaAD.index):
+# 		hovertext.append([])
 
-			pwb = dftemp.loc[yy,xx]
-			pwbmulofrp = dftemprpmul.loc[yy,xx]
-			if str(pwb)  == "nan":
-				ccode = '#808080' #(grey)
-			else:
-				ccode = '#228B22' #(green)
+# 		for xi,xx in enumerate(dfbidaAD.columns):
 
-			list_col.append(ccode)
+# 			aggdemand = dfbidaAD.loc[yy,xx]
+# 			aggdemperc = ADPrecOfBlksforSale.loc[yy,xx]
+# 			excessdemand = dfbidaED.loc[yy,xx]
 
-			hovertext[-1].append(
-						'Bidder: {}\
-						<br>Circle: {}\
-						<br>PWB : {} Rs Cr\
-						<br>PWB / Reserve P: {}\
-						<br>PWB Type : {}\
-						<br>Round No: {}'
-
-					 .format( 
-						yy,
-						state_dict[xx],
-						pwb,
-						pwbmulofrp,
-						pwbtype,
-						round_number,
-						)
-						)
-
-		dict_col[yy]=list_col
-
-	temp = pd.DataFrame(dict_col).T
-	temp.columns = dftemp.columns
-	colormatrix = list(temp.values)
-	return hovertext, colormatrix
-
-#-----------------Hovertext for Provisional Winning Bids Ends----------------------
-
-
-#---------------Hovertest for Demand Intensity---------------------
-
-@st.cache_resource
-def htext_auctiondata_2010_3G_BWA_DemandIntensity(dfbid,ADPrecOfBlksforSale):
-
-	dfbidaAD = dfbid.pivot(index="LSA", columns='Clock Round', values="Aggregate Demand").sort_index(ascending=True)
-
-	dfbidaED = dfbid.pivot(index="LSA", columns='Clock Round', values="Excess Demand").sort_index(ascending=True)
-
-	hovertext = []
-	for yi,yy in enumerate(dfbidaAD.index):
-		hovertext.append([])
-
-		for xi,xx in enumerate(dfbidaAD.columns):
-
-			aggdemand = dfbidaAD.loc[yy,xx]
-			aggdemperc = ADPrecOfBlksforSale.loc[yy,xx]
-			excessdemand = dfbidaED.loc[yy,xx]
-
-			hovertext[-1].append(
-						'Circle: {}\
-						<br>Round No: {}\
-						<br>Agg Demand : {} Blocks\
-						<br>Ratio (AD/Total) : {} \
-						<br>Excess Demand : {} Blocks'
+# 			hovertext[-1].append(
+# 						'Circle: {}\
+# 						<br>Round No: {}\
+# 						<br>Agg Demand : {} Blocks\
+# 						<br>Ratio (AD/Total) : {} \
+# 						<br>Excess Demand : {} Blocks'
 				
 
-					 .format( 
-						yy,
-						xx,
-						aggdemand,
-						aggdemperc,
-						excessdemand,
-						)
-						)
+# 					 .format( 
+# 						yy,
+# 						xx,
+# 						aggdemand,
+# 						aggdemperc,
+# 						excessdemand,
+# 						)
+# 						)
 
-	return hovertext
-
-
-#---------------Hovertest for Demand Intensity Ends---------------------
+# 	return hovertext
 
 
-#---------------Hovertest for Bidding Activity Total---------------------
-
-@st.cache_resource
-def htext_auctiondata_2010_3G_BWA_BiddingActivity(dfbid, column_name):
-
-	filt = dfbid["Clk_Round"]==1
-
-	dfbidRD1 = dfbid[filt]
-
-	dfbidactivity = dfbid.pivot(index="Bidder", columns='Clk_Round', values=column_name).sort_index(ascending=True)
-
-	dfbidactivityRd1 = dfbidRD1.pivot(index="Bidder", columns='Clk_Round', values="Pts_Start_Round").sort_index(ascending=True)
-
-	dfbidactivityratio = round((dfbidactivity/dfbidactivityRd1.values),2)
+# #---------------Hovertest for Demand Intensity Ends---------------------
 
 
-	hovertext = []
-	for yi,yy in enumerate(dfbidactivity.index):
-		hovertext.append([])
+# #---------------Hovertest for Bidding Activity Total---------------------
 
-		for xi,xx in enumerate(dfbidactivity.columns):
+# @st.cache_resource
+# def htext_auctiondata_2010_3G_BWA_BiddingActivity(dfbid, column_name):
 
-			pointsinplay = dfbidactivity.loc[yy,xx]
-			pointsratio = dfbidactivityratio.loc[yy,xx]
+# 	filt = dfbid["Clk_Round"]==1
+
+# 	dfbidRD1 = dfbid[filt]
+
+# 	dfbidactivity = dfbid.pivot(index="Bidder", columns='Clk_Round', values=column_name).sort_index(ascending=True)
+
+# 	dfbidactivityRd1 = dfbidRD1.pivot(index="Bidder", columns='Clk_Round', values="Pts_Start_Round").sort_index(ascending=True)
+
+# 	dfbidactivityratio = round((dfbidactivity/dfbidactivityRd1.values),2)
 
 
-			hovertext[-1].append(
-						'Bidder: {}\
-						<br>Round No: {}\
-						<br>Points in Play : {} Nos\
-						<br>Ratio (Actual/Initial) : {}'
+# 	hovertext = []
+# 	for yi,yy in enumerate(dfbidactivity.index):
+# 		hovertext.append([])
+
+# 		for xi,xx in enumerate(dfbidactivity.columns):
+
+# 			pointsinplay = dfbidactivity.loc[yy,xx]
+# 			pointsratio = dfbidactivityratio.loc[yy,xx]
+
+
+# 			hovertext[-1].append(
+# 						'Bidder: {}\
+# 						<br>Round No: {}\
+# 						<br>Points in Play : {} Nos\
+# 						<br>Ratio (Actual/Initial) : {}'
 				
-					 .format( 
-						yy,
-						xx,
-						pointsinplay,
-						pointsratio,
-						)
-						)
+# 					 .format( 
+# 						yy,
+# 						xx,
+# 						pointsinplay,
+# 						pointsratio,
+# 						)
+# 						)
 
-	return hovertext
+# 	return hovertext
 
 
-#---------------Hovertest for Bidding Activity Total Ends---------------------
+# #---------------Hovertest for Bidding Activity Total Ends---------------------
 
 
 
