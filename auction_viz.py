@@ -1893,14 +1893,14 @@ with st.sidebar:
 #loading file rupee to USD and finding the exchange rate in the auction eom
 auction_eom_list = [x.date() for x in list(auction_eom_dates_dict.values())]
 
-dfrsrate = loadrstousd()
-auction_rsrate_dict ={} #the dictionary which stores all the values of the rupee usd rates
-dfrsrate["Date"] = pd.to_datetime(dfrsrate["Date"])
-dfrsrate = dfrsrate.set_index("Date").asfreq("ME")
+# dfrsrate = loadrstousd()
+# auction_rsrate_dict ={} #the dictionary which stores all the values of the rupee usd rates
+# dfrsrate["Date"] = pd.to_datetime(dfrsrate["Date"])
+# dfrsrate = dfrsrate.set_index("Date").asfreq("ME")
 
-for index in dfrsrate.index:
-	if index.date() in auction_eom_list:
-		auction_rsrate_dict[index.year] = dfrsrate.loc[index,:].values[0]
+# for index in dfrsrate.index:
+# 	if index.date() in auction_eom_list:
+# 		auction_rsrate_dict[index.year] = dfrsrate.loc[index,:].values[0]
 
 
 # if selected_dimension == "AuctionYear Activity": #Incompete Still working this section
